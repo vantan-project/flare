@@ -1,0 +1,7 @@
+services:
+  api:
+    build: ./
+    volumes:
+      - .:/workdir
+    ports:
+     - 8087:8080
