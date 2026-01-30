@@ -3,10 +3,10 @@ import { QueryResponse } from "../query-response";
 
 export type BlogIndexRequest = {
   orderBy: "createdAt" | "flarePoint" | "corePoint";
-  limit: number;
-  offset: number;
-  userId: number;
-  daysAgo: number;
+  limit: number | null;
+  offset: number | null;
+  userId: number | null;
+  daysAgo: number | null;
 };
 
 export type BlogIndexResponse = {

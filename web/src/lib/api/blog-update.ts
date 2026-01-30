@@ -6,6 +6,6 @@ export type BlogUpdateRequest = {
   content: string;
   tagIds: number[];
 };
-export function blogupdate(id: number): Promise<MutationResponse> {
+export function blogUpdate(id: number): Promise<MutationResponse> {
   return fetchApi("PATCH", `/blogs/${id}`);
 }
