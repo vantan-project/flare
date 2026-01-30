@@ -10,12 +10,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type request struct {
+type loginRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }
 
-type response struct {
+type loginResponse struct {
 	Status      string            `json:"status"`
 	Message     string            `json:"message,omitempty"`
 	FieldErrors map[string]string `json:"fieldErrors,omitempty"`
@@ -23,7 +23,7 @@ type response struct {
 }
 
 func Login(cc *custom.Context) error {
-	var req request
+	var req loginRequest
 	fieldErrors, err := cc.Validate(&req, map[string]map[string]string{
 		"email": {
 			"required": "メールアドレスは必須です。",
@@ -33,13 +33,13 @@ func Login(cc *custom.Context) error {
 	})
 
 	if err != nil {
-		return cc.JSON(500, response{
+		return cc.JSON(500, loginResponse{
 			Status:  "error",
 			Message: "予期せぬエラーが発生しました。",
 		})
 	}
 	if len(fieldErrors) > 0 {
-		return cc.JSON(422, response{
+		return cc.JSON(422, loginResponse{
 			Status:      "validation",
 			FieldErrors: fieldErrors,
 		})
@@ -48,12 +48,12 @@ func Login(cc *custom.Context) error {
 	var user model.User
 	if err := cc.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return cc.JSON(401, response{
+			return cc.JSON(401, loginResponse{
 				Status:  "error",
 				Message: "メールアドレスまたはパスワードが正しくありません。",
 			})
 		}
-		return cc.JSON(500, response{
+		return cc.JSON(500, loginResponse{
 			Status:  "error",
 			Message: "サーバーエラーが発生しました。",
 		})
@@ -61,7 +61,7 @@ func Login(cc *custom.Context) error {
 
 	// パスワードの検証
 	if !hash.Check(user.Password, req.Password) {
-		return cc.JSON(401, response{
+		return cc.JSON(401, loginResponse{
 			Status:  "error",
 			Message: "メールアドレスまたはパスワードが正しくありません。",
 		})
@@ -70,13 +70,13 @@ func Login(cc *custom.Context) error {
 	// JWTトークンの生成
 	accessToken, err := jwt.Generate(user.ID, user.Email)
 	if err != nil {
-		return cc.JSON(500, response{
+		return cc.JSON(500, loginResponse{
 			Status:  "error",
 			Message: "トークンの生成に失敗しました。",
 		})
 	}
 
-	return cc.JSON(200, response{
+	return cc.JSON(200, loginResponse{
 		Status:      "success",
 		Message:     "ログインに成功しました。",
 		AccessToken: accessToken,

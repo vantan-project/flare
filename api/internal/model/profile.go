@@ -5,6 +5,6 @@ import "gorm.io/gorm"
 type Profile struct {
 	gorm.Model
 	Name        string
-	IconImageID uint
+	IconImageID *uint
 	UserID      uint
 }

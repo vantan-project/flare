@@ -1,7 +1,7 @@
 CREATE TABLE profiles (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    icon_image_id INT UNSIGNED NOT NULL,
+    icon_image_id INT UNSIGNED,
     FOREIGN KEY (icon_image_id) REFERENCES images(id) ON DELETE CASCADE,
     user_id INT UNSIGNED NOT NULL UNIQUE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
