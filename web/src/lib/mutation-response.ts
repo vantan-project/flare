@@ -1,4 +1,4 @@
-export type MutationResponse<T extends object> =
+export type MutationResponse<T extends object = {}> =
   | (T & {
       status: "success";
       message: string;
