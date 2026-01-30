@@ -10,8 +10,6 @@ export type BlogShowResponse = {
   updateAt: string;
 };
 
-export function blogshow(
-  id: number,
-): Promise<QueryResponse<{ BlogShowResponse: string }>> {
+export function blogshow(id: number): Promise<QueryResponse<BlogShowResponse>> {
   return fetchApi("GET", `/blogs/${id}`);
 }

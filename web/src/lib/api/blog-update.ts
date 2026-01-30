@@ -4,8 +4,8 @@ import { MutationResponse } from "../mutation-response";
 export type BlogUpdateRequest = {
   title: string;
   content: string;
-  tagids: number[];
+  tagIds: number[];
 };
 export function blogupdate(id: number): Promise<MutationResponse> {
-  return fetchApi("PATCH", `/blogs/${id}/update`);
+  return fetchApi("PATCH", `/blogs/${id}`);
 }
