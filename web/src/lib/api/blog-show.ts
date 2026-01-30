@@ -1,0 +1,15 @@
+import { fetchApi } from "@/utils/fetch-api";
+import { QueryResponse } from "../query-response";
+
+export type BlogShowResponse = {
+  title: string;
+  thumbnailImageUrl: string;
+  userId: number[];
+  wishesCount: number;
+  tags: string[];
+  updateAt: string;
+};
+
+export function blogShow(id: number): Promise<QueryResponse<BlogShowResponse>> {
+  return fetchApi("GET", `/blogs/${id}`);
+}
