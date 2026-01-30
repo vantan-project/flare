@@ -23,7 +23,8 @@ func NewGorm() (*Gorm, error) {
 	}
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Warn),
+		TranslateError: true,
+		Logger:         logger.Default.LogMode(logger.Warn),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
