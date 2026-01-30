@@ -4,10 +4,13 @@ import "gorm.io/gorm"
 
 type Blog struct {
 	gorm.Model
-	UserID           uint   `gorm:"not null"`
-	ThumbnailImageID uint   `gorm:"not null"`
-	Title            string `gorm:"not null"`
-	Content          string `gorm:"not null"`
-	FlarePoint       int    `gorm:"not null"`
-	CorePoint        int    `gorm:"not null"`
+	UserID           uint
+	ThumbnailImageID uint
+	Title            string
+	Content          string
+	FlarePoint       int
+	CorePoint        int
+	WishedUsers      []User `gorm:"many2many:wishes"`
+	BookmarkedUsers  []User `gorm:"many2many:bookmarks"`
+	Tags             []Tag  `gorm:"many2many:blog_tags"`
 }
