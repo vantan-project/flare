@@ -1,7 +1,6 @@
 package custom
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -18,6 +17,11 @@ type Context struct {
 	DB     *Gorm
 }
 
+type validateRessponse struct {
+	Status      string            `json:"status"`
+	FieldErrors map[string]string `json:"fieldErrors"`
+}
+
 func newContext(ec echo.Context, db *Gorm) *Context {
 	return &Context{
 		ec: ec,
@@ -25,22 +29,24 @@ func newContext(ec echo.Context, db *Gorm) *Context {
 	}
 }
 
-func (cc *Context) Validate(i interface{}, rules map[string]map[string]string) (fieldErrors map[string]string, err error) {
-	if err = cc.ec.Bind(i); err != nil {
-		return nil, err
+func (cc *Context) Validate(i interface{}, rules map[string]map[string]string) {
+	if err := cc.ec.Bind(i); err != nil {
+		cc.ec.NoContent(http.StatusInternalServerError)
+		panic(Panic{})
 	}
 
-	err = cc.ec.Validate(i)
+	err := cc.ec.Validate(i)
 	if err == nil {
-		return nil, nil
+		return
 	}
 
 	ves, ok := err.(validator.ValidationErrors)
 	if !ok {
-		return nil, errors.New("failed to validate")
+		cc.ec.NoContent(http.StatusInternalServerError)
+		panic(Panic{})
 	}
 
-	fieldErrors = make(map[string]string)
+	fieldErrors := make(map[string]string)
 	t := reflect.TypeOf(i)
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
@@ -70,13 +76,25 @@ func (cc *Context) Validate(i interface{}, rules map[string]map[string]string) (
 		fieldErrors[jsonKey] = fmt.Sprintf("Field validation for '%s' failed on the '%s' tag", jsonKey, tag)
 	}
 
-	return fieldErrors, nil
+	cc.JSON(http.StatusUnprocessableEntity, validateRessponse{
+		Status:      "Validation",
+		FieldErrors: fieldErrors,
+	})
+	panic(Panic{})
 }
 
 func (cc *Context) JSON(code int, i interface{}) error {
 	return cc.ec.JSON(code, i)
 }
 
+func (cc *Context) NoContent(code int) error {
+	return cc.ec.NoContent(code)
+}
+
 func (cc *Context) Request() *http.Request {
 	return cc.ec.Request()
+}
+
+func (cc *Context) Logger() echo.Logger {
+	return cc.ec.Logger()
 }

@@ -16,34 +16,20 @@ type loginRequest struct {
 }
 
 type loginResponse struct {
-	Status      string            `json:"status"`
-	Message     string            `json:"message,omitempty"`
-	FieldErrors map[string]string `json:"fieldErrors,omitempty"`
-	AccessToken string            `json:"accessToken,omitempty"`
+	Status      string `json:"status"`
+	Message     string `json:"message,omitempty"`
+	AccessToken string `json:"accessToken,omitempty"`
 }
 
 func Login(cc *custom.Context) error {
 	var req loginRequest
-	fieldErrors, err := cc.Validate(&req, map[string]map[string]string{
+	cc.Validate(&req, map[string]map[string]string{
 		"email": {
 			"required": "メールアドレスは必須です。",
 			"email":    "有効なメールアドレスを入力してください。",
 		},
 		"password": {"required": "パスワードは必須です。"},
 	})
-
-	if err != nil {
-		return cc.JSON(500, loginResponse{
-			Status:  "error",
-			Message: "予期せぬエラーが発生しました。",
-		})
-	}
-	if len(fieldErrors) > 0 {
-		return cc.JSON(422, loginResponse{
-			Status:      "validation",
-			FieldErrors: fieldErrors,
-		})
-	}
 
 	var user model.User
 	if err := cc.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
