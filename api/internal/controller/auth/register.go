@@ -17,16 +17,15 @@ type registerRequest struct {
 }
 
 type registerResponse struct {
-	Status      string            `json:"status"`
-	Message     string            `json:"message,omitempty"`
-	FieldErrors map[string]string `json:"fieldErrors,omitempty"`
-	AccessToken string            `json:"accessToken,omitempty"`
+	Status      string `json:"status"`
+	Message     string `json:"message"`
+	AccessToken string `json:"accessToken,omitempty"`
 }
 
 func Register(cc *custom.Context) error {
 	var req registerRequest
 	// ここのバリデーションでreqの中身に入力されたデータを入れている。
-	fieldErrors, err := cc.Validate(&req, map[string]map[string]string{
+	cc.Validate(&req, map[string]map[string]string{
 		"name": {
 			"required": "ユーザー名は必須です。",
 			"max":      "ユーザー名は20文字以内で入力してください。",
@@ -39,21 +38,6 @@ func Register(cc *custom.Context) error {
 			"required": "パスワードは必須です。",
 		},
 	})
-	// バリデーションの操作に失敗
-	if err != nil {
-		// structでStatusをstatusにしてるから出力時にはstatusで出力される。
-		return cc.JSON(500, registerResponse{
-			Status:  "error",
-			Message: "予期せぬエラーが発生しました。",
-		})
-	}
-	// バリデーションエラー
-	if len(fieldErrors) > 0 {
-		return cc.JSON(422, registerResponse{
-			Status:      "Validation",
-			FieldErrors: fieldErrors,
-		})
-	}
 
 	// パスワードのハッシュ化
 	hashedPassword, err := hash.Make(req.Password)

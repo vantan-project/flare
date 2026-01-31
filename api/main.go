@@ -6,6 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/vantan-project/flare/internal/custom"
+	"github.com/vantan-project/flare/internal/middleware"
 	"github.com/vantan-project/flare/internal/router"
 )
 
@@ -19,6 +20,7 @@ func main() {
 	defer db.Close() // 後処理
 
 	e := custom.NewEcho(db)
+	e.Use(middleware.RecoverMiddleware)
 
 	e.GET("/", func(cc *custom.Context) error {
 		return cc.JSON(http.StatusOK, "Hello Echo!")
