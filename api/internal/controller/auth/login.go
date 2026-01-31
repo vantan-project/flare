@@ -17,7 +17,7 @@ type loginRequest struct {
 
 type loginResponse struct {
 	Status      string `json:"status"`
-	Message     string `json:"message,omitempty"`
+	Message     string `json:"message"`
 	AccessToken string `json:"accessToken,omitempty"`
 }
 
