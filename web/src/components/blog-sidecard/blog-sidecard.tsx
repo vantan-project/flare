@@ -1,4 +1,3 @@
-import { title } from "node:process";
 import { Icon } from "@/components/icon/icon";
 import Image from "next/image";
 
