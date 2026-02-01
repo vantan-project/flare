@@ -3,7 +3,7 @@ import { MutationResponse } from "../mutation-response";
 
 export type UserUpdateRequest = {
   name?: string;
-  icon?: string;
+  iconImageId?: string;
 };
 
 export function userUpdate(req: UserUpdateRequest): Promise<MutationResponse> {
