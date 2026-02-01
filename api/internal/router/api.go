@@ -12,5 +12,5 @@ func Api(e *custom.Group) {
 	a.POST("/login", auth.Login)
 
 	b := e.Group("/blogs")
-	b.GET("/", blogs.Index)
+	b.GET("", blogs.Index)
 }
