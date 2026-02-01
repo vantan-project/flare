@@ -21,37 +21,37 @@ export function BlogSideCard({
 }: BlogCordProps) {
   return (
     <div className="grid grid-cols-[86px_auto] gap-3 border-b pb-2">
-      <Image
-        src={thumbnailImageUrl}
-        alt="画像なし"
-        width={86}
-        height={50}
-        className="rounded-xl object-cover"
-      />
+      <div className="relative w-21.5 h-12.5 overflow-hidden rounded-[10px]">
+        <Image
+          src={thumbnailImageUrl}
+          alt="画像なし"
+          fill
+          className="object-cover"
+        />
+      </div>
+
       <div className="flex flex-col gap-2">
-        <div className="font-bold line-clamp-2 wrap-break-word h-[2lh]">
-          {title}
-        </div>
+        <div className="font-bold line-clamp-2 break-all">{title}</div>
 
         <div className="flex justify-between">
-          <div className="flex gap-1">
-            <Image
-              src={user.iconImageUrl || "/defaultaveter.svg"}
-              alt={user.name}
-              width={24}
-              height={24}
-              className="rounded-full"
-            />
+          <div className="flex items-center gap-1">
+            <div className="relative w-5 h-5 overflow-hidden rounded-full">
+              <Image
+                src={user.iconImageUrl || "/defaultaveter.svg"}
+                alt={user.name}
+                fill
+              />
+            </div>
             <div>{user.name}</div>
           </div>
-          <div className="flex gap-1">
-            <div className="flex gap-0.5">
+          <div className="flex gap-1 text-gray">
+            <div className="flex items-center gap-0.5">
               <Icon size={20} name="flare" />
-              {wishedCount}
+              <p className="text-black">{wishedCount}</p>
             </div>
-            <div className="flex gap-0.5">
+            <div className="flex items-center gap-0.5">
               <Icon size={20} name="book" />
-              <div>{bookmarkedCount}</div>
+              <p className="text-black">{bookmarkedCount}</p>
             </div>
           </div>
         </div>
