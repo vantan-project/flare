@@ -1,7 +1,11 @@
+import { BookMark } from "./svgs/bookmark";
 import { Flare } from "./svgs/flare";
+import { Person } from "./svgs/person";
 
 const icons = {
   flare: Flare,
+  person: Person,
+  book: BookMark,
 } as const;
 
 export type IconProps = {
