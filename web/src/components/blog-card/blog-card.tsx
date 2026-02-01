@@ -19,7 +19,7 @@ export function BlogCard({ title, username, bookmark, fire }: BlogCordProps) {
         height={140}
         className="rounded-xl"
       />
-      <div className="font-bold table-auto">{title}</div>
+      <div className="font-bold">{title}</div>
       <div className="flex items-center gap-4 -space-x-2">
         <div className="flex -space-x-3 gap-4">
           <Icon size={24} name="person" />
