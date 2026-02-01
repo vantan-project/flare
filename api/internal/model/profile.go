@@ -7,4 +7,5 @@ type Profile struct {
 	Name        string
 	IconImageID *uint
 	UserID      uint
+	Image       Image `gorm:"foreignKey:IconImageID"`
 }
