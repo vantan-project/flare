@@ -1,9 +1,9 @@
-import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
+import { BlogCard } from "@/components/blog-card/blog-card";
 
 export default function () {
   return (
     <div>
-      <BlogSideCard
+      <BlogCard
         title="たいとるtytuiytrewertyuuiytrertyukytryetwrrytrytuytretreyturyituyiutyrtyee"
         user={{
           name: "けいと",
