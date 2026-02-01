@@ -22,8 +22,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	ai, err := custom.NewAI()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	e := custom.NewEcho(db, storage)
+	e := custom.NewEcho(db, storage, ai)
 	e.Use(middleware.RecoverMiddleware)
 
 	e.GET("/", func(cc *custom.Context) error {

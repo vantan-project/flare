@@ -16,6 +16,7 @@ type Context struct {
 	AuthID  uint
 	DB      *Gorm
 	Storage *S3
+	AI      *AI
 }
 
 type validateRessponse struct {
@@ -23,10 +24,12 @@ type validateRessponse struct {
 	FieldErrors map[string]string `json:"fieldErrors"`
 }
 
-func newContext(ec echo.Context, db *Gorm) *Context {
+func newContext(ec echo.Context, db *Gorm, storage *S3, ai *AI) *Context {
 	return &Context{
-		ec: ec,
-		DB: db,
+		ec:      ec,
+		DB:      db,
+		Storage: storage,
+		AI:      ai,
 	}
 }
 

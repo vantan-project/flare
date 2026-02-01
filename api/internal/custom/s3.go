@@ -10,6 +10,7 @@ import (
 	"github.com/vantan-project/flare/internal/env"
 )
 
+// custom.S3
 type S3 struct {
 	*s3.Client
 	Bucket string
