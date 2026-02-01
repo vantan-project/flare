@@ -10,5 +10,11 @@ build:
 in:
 	docker compose exec api bash
 
-seed update:
-	go generate ./cmd/seed/seed.go 
+migrate:
+	go run ./cmd/migrate/migrate.go $(filter-out $@,$(MAKECMDGOALS))
+
+seed:
+	go run ./cmd/seed/seed.go $(filter-out $@,$(MAKECMDGOALS))
+
+%:
+	@:
