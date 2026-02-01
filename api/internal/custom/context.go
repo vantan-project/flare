@@ -12,9 +12,10 @@ import (
 
 // custom.Context
 type Context struct {
-	ec     echo.Context
-	AuthID uint
-	DB     *Gorm
+	ec      echo.Context
+	AuthID  uint
+	DB      *Gorm
+	Storage *S3
 }
 
 type validateRessponse struct {

@@ -13,7 +13,7 @@ type Echo struct {
 	// 外部で使うものがあれば追加していく
 }
 
-func NewEcho(db *Gorm) *Echo {
+func NewEcho(db *Gorm, storage *S3) *Echo {
 	e := echo.New()
 	e.Validator = NewValidator()
 	return &Echo{
