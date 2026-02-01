@@ -1,6 +1,8 @@
 package blogs
 
 import (
+	"fmt"
+
 	"github.com/vantan-project/flare/internal/custom"
 	"github.com/vantan-project/flare/internal/model"
 	"gorm.io/gorm"
@@ -9,7 +11,7 @@ import (
 type createRequest struct {
 	Title            string `json:"title" validate:"required,max=64"`
 	Content          string `json:"content" validate:"required"`
-	TagIds           []uint `json:"tagIds" validate:"required,min=1,dive,min=1"`
+	TagIds           []uint `json:"tagIds"`
 	ThumbnailImageID uint   `json:"thumbnailImageId" validate:"required,min=1"`
 }
 
@@ -36,16 +38,18 @@ func Create(cc *custom.Context) error {
 			"required": "サムネイル画像は必須です。",
 		},
 	})
+	fmt.Println("req", req)
 
 	var blogID uint
 	err := cc.DB.Transaction(func(tx *gorm.DB) error {
 		// ブログの作成
 		blog := model.Blog{
-			Title:            req.Title,
-			Content:          req.Content,
-			FlarePoint:       0,
-			CorePoint:        0,
-			UserID:           cc.AuthID,
+			Title:      req.Title,
+			Content:    req.Content,
+			FlarePoint: 0,
+			CorePoint:  0,
+			// ダミー。ミドルウェアがなおったらcc.AuthIDを使用する。
+			UserID:           2,
 			ThumbnailImageID: req.ThumbnailImageID,
 		}
 		if err := tx.Create(&blog).Error; err != nil {

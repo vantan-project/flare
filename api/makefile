@@ -7,6 +7,10 @@ down:
 build:
 	docker compose build
 
+restart:
+	docker compose down
+	docker compose up -d
+
 in:
 	docker compose exec api bash
 
