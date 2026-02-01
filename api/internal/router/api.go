@@ -4,6 +4,7 @@ import (
 	"github.com/vantan-project/flare/internal/controller/auth"
 	"github.com/vantan-project/flare/internal/controller/blogs"
 	"github.com/vantan-project/flare/internal/custom"
+	"github.com/vantan-project/flare/internal/middleware"
 )
 
 func Api(e *custom.Group) {
@@ -14,4 +15,5 @@ func Api(e *custom.Group) {
 	b := e.Group("/blogs")
 	b.GET("", blogs.Index)
 	b.GET("/:blogId", blogs.Detail)
+	b.POST("", blogs.Create, middleware.AuthMiddleware)
 }
