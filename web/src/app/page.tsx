@@ -92,7 +92,7 @@ export default function () {
             もっと見る＞
           </Link>
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 overflow-y-auto">
           {newBlogs.map((b) => (
             <BlogSideCard
               key={b.id}
