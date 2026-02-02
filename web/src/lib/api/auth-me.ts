@@ -7,7 +7,7 @@ export type AuthMeResponse = {
   iconImageUrl: string;
   wishesCount: number[];
   bookmarksCount: number[];
-}
+};
 
 export function authMe(): Promise<QueryResponse<AuthMeResponse>> {
   return fetchApi("GET", "/auth/me");
