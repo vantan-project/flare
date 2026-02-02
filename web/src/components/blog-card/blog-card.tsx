@@ -29,7 +29,7 @@ export function BlogCard({
           className="object-cover"
         />
       </div>
-      <div className="font-bold line-clamp-2 break-all h-[2lh] my-2">
+      <div className="font-medium line-clamp-2 break-all h-[2lh] my-2">
         {title}
       </div>
       <div className="flex justify-between">

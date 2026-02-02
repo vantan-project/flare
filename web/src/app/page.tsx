@@ -52,7 +52,7 @@ export default function () {
   return (
     <div>
       <div className="p-5">
-        <div className="font-bold text-[16px] border-b-2 border-primary p-2">
+        <div className="font-medium text-[16px] border-b-2 border-primary p-2">
           高熱意度ピックアップ
         </div>
         <div className="p-3" />
@@ -69,7 +69,7 @@ export default function () {
           ))}
         </div>
         <div className="m-5" />
-        <div className="font-bold text-[16px] border-b-2 p-2">
+        <div className="font-medium text-[16px] border-b-2 p-2">
           コア度セレクション
         </div>
         <div className="p-3" />
