@@ -8,10 +8,10 @@ export function Footer() {
   const pathname = usePathname();
   return (
     <div>
-      <div className="bg-white flex justify-evenly p-4">
+      <div className="bg-white flex justify-evenly items-center h-20">
         <Link href="/">
           <div className={cn(pathname == "/" && "text-primary")}>
-            <div className="w-8 h-8 text-center text-[8px]">
+            <div className="flex flex-col items-center justify-center w-16 h-16 text-[8px]">
               <Icon name="home" size={32} />
               ホーム
             </div>
@@ -19,7 +19,7 @@ export function Footer() {
         </Link>
         <Link href="/create">
           <div className={cn(pathname == "/create" && "text-primary")}>
-            <div className="w-8 h-8 text-center text-[8px]">
+            <div className="flex flex-col items-center justify-center w-16 h-16 text-[8px]">
               <Icon name="add" size={32} />
               作成
             </div>
@@ -27,21 +27,17 @@ export function Footer() {
         </Link>
         <Link href="/bookMark">
           <div className={cn(pathname == "/bookmark" && "text-primary")}>
-            <div className="w-8 h-8">
+            <div className="flex flex-col items-center justify-center w-16 h-16 text-[8px]">
               <Icon name="book" size={32} />
-              <div className="text-center text-[8px] text-nowrap -indent-2">
-                ブックマーク
-              </div>
+              ブックマーク
             </div>
           </div>
         </Link>
         <Link href="/profile">
           <div className={cn(pathname == "/profile" && "text-primary")}>
-            <div className="w-8 h-8">
+            <div className="flex flex-col items-center justify-center w-16 h-16 text-[8px]">
               <Icon name="profile" size={32} />
-              <div className="text-center text-[8px] text-nowrap -indent-2">
-                プロフィール
-              </div>
+              プロフィール
             </div>
           </div>
         </Link>
