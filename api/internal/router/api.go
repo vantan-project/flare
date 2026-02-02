@@ -17,4 +17,5 @@ func Api(e *custom.Group) {
 	b.GET("/:blogId", blogs.Detail)
 	b.POST("", blogs.Create, middleware.AuthMiddleware)
 	b.PATCH("/:blogId/update", blogs.Update, middleware.AuthMiddleware)
+	b.DELETE("/:blogId/delete", blogs.Delete, middleware.AuthMiddleware)
 }

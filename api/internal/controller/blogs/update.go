@@ -35,20 +35,35 @@ func Update(cc *custom.Context) error {
 			"required": "サムネイル画像は必須です。",
 		},
 	})
+	// ブログの取得
+	var blog model.Blog
+	if err := cc.DB.Where("id = ?", req.BlogID).
+		Where("deleted_at IS NULL").
+		First(&blog).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return cc.JSON(404, updateResponse{
+				Status:  "error",
+				Message: "更新するブログが存在しません。",
+			})
+		}
+	}
+
+	// 認証ユーザーのブログであるかどうか
+	// if blog.UserID != cc.AuthID {
+	// 	return cc.JSON(403, updateResponse{
+	// 		Status:  "error",
+	// 		Message: "このブログは更新できません。",
+	// 	})
+	// }
 
 	err := cc.DB.Transaction(func(tx *gorm.DB) error {
-		blog := model.Blog{
-			Model: gorm.Model{
-				ID: req.BlogID,
-			},
+		newBlog := model.Blog{
 			Title:            req.Title,
 			Content:          req.Content,
 			ThumbnailImageID: req.ThumbnailImageID,
-			// ここもあとで修正
-			UserID: 2,
 		}
 
-		if err := tx.Where("id = ?", req.BlogID).Updates(&blog).Error; err != nil {
+		if err := tx.Where("id = ?", req.BlogID).Updates(&newBlog).Error; err != nil {
 			return err
 		}
 
@@ -67,12 +82,6 @@ func Update(cc *custom.Context) error {
 		return nil
 	})
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return cc.JSON(404, updateResponse{
-				Status:  "error",
-				Message: "更新するブログが存在しません。",
-			})
-		}
 		return cc.JSON(500, updateResponse{
 			Status:  "error",
 			Message: "ブログの更新に失敗しました。",
