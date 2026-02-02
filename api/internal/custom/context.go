@@ -12,7 +12,7 @@ import (
 
 // custom.Context
 type Context struct {
-	ec      echo.Context
+	echo.Context
 	AuthID  uint
 	DB      *Gorm
 	Storage *S3
@@ -24,29 +24,20 @@ type validateRessponse struct {
 	FieldErrors map[string]string `json:"fieldErrors"`
 }
 
-func newContext(ec echo.Context, db *Gorm, storage *S3, ai *AI) *Context {
-	return &Context{
-		ec:      ec,
-		DB:      db,
-		Storage: storage,
-		AI:      ai,
-	}
-}
-
-func (cc *Context) Validate(i interface{}, rules map[string]map[string]string) {
-	if err := cc.ec.Bind(i); err != nil {
-		cc.ec.NoContent(http.StatusInternalServerError)
+func (cc *Context) BindValidate(i interface{}, rules map[string]map[string]string) {
+	if err := cc.Bind(i); err != nil {
+		cc.NoContent(http.StatusInternalServerError)
 		panic(Panic{})
 	}
 
-	err := cc.ec.Validate(i)
+	err := cc.Context.Validate(i)
 	if err == nil {
 		return
 	}
 
 	ves, ok := err.(validator.ValidationErrors)
 	if !ok {
-		cc.ec.NoContent(http.StatusInternalServerError)
+		cc.NoContent(http.StatusInternalServerError)
 		panic(Panic{})
 	}
 
@@ -85,20 +76,4 @@ func (cc *Context) Validate(i interface{}, rules map[string]map[string]string) {
 		FieldErrors: fieldErrors,
 	})
 	panic(Panic{})
-}
-
-func (cc *Context) JSON(code int, i interface{}) error {
-	return cc.ec.JSON(code, i)
-}
-
-func (cc *Context) NoContent(code int) error {
-	return cc.ec.NoContent(code)
-}
-
-func (cc *Context) Request() *http.Request {
-	return cc.ec.Request()
-}
-
-func (cc *Context) Logger() echo.Logger {
-	return cc.ec.Logger()
 }
