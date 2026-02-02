@@ -45,12 +45,12 @@ export function BlogCard({
         </div>
         <div className="flex gap-1 text-gray">
           <div className="flex items-center gap-0.5">
-            <Icon size={20} name="book" />
-            <p className="text-black">{wishedCount}</p>
-          </div>
-          <div className="flex items-center gap-0.5">
             <Icon size={20} name="flare" />
             <p className="text-black">{bookmarkedCount}</p>
+          </div>
+          <div className="flex items-center gap-0.5">
+            <Icon size={20} name="book" />
+            <p className="text-black">{wishedCount}</p>
           </div>
         </div>
       </div>

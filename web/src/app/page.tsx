@@ -26,37 +26,18 @@ export default function () {
     ],
     updateAt: "60分前",
   }));
-  const dammyBlogs2 = Array.from({ length: 4 }, (_, i) => ({
-    id: i + 1,
-    title: `タイトル${i + 1}`,
-    thumbnailImageUrl: "https://placehold.jp/200x200.png",
-    user: {
-      id: i,
-      name: "テストユーザー",
-      iconImageUrl: "https://placehold.jp/300x200.png",
-    },
-    wishesCount: 23,
-    bookmarksCount: 23,
-    tags: [
-      { id: 1, name: "タグ" },
-      { id: 2, name: "タグ" },
-      { id: 3, name: "タグ" },
-    ],
-    updateAt: "60分前",
-  }));
 
   const [flareBlogs, setFlareRanking] = useState<BlogIndexResponse>(dammyBlogs);
   const [coreBlogs, setCoreRanking] = useState<BlogIndexResponse>(dammyBlogs);
-  const [newBlogs, setNewBlogs] = useState<BlogIndexResponse>(dammyBlogs2);
+  const [newBlogs, setNewBlogs] = useState<BlogIndexResponse>(dammyBlogs);
 
   return (
     <div>
       <div className="p-5">
-        <div className="font-medium text-[16px] border-b-2 border-primary p-2">
+        <div className="font-medium border-b-2 border-primary p-2 mb-3">
           高熱意度ピックアップ
         </div>
-        <div className="p-3" />
-        <div className="flex gap-3 overflow-x-auto">
+        <div className="flex gap-5 overflow-x-auto pb-1">
           {flareBlogs.map((b) => (
             <BlogCard
               key={b.id}
@@ -68,12 +49,12 @@ export default function () {
             />
           ))}
         </div>
-        <div className="m-5" />
-        <div className="font-medium text-[16px] border-b-2 p-2">
+        <div className="h-3 mb-5 border-b border-base-hover -mx-5" />
+        <div className="font-medium border-b-2 p-2 mb-3">
           コア度セレクション
         </div>
-        <div className="p-3" />
-        <div className="flex gap-3 overflow-x-auto">
+        <div className="h-3" />
+        <div className="flex gap-5 overflow-x-auto pb-1">
           {coreBlogs.map((b) => (
             <BlogCard
               key={b.id}
@@ -85,10 +66,10 @@ export default function () {
             />
           ))}
         </div>
-        <div className="m-5" />
-        <div className="mb-3">
+        <div className="h-3 mb-5 border-b border-base-hover -mx-5" />
+        <div className="mb-3 text-sm">
           新着投稿
-          <Link href="/" className="px-3">
+          <Link href="/" className="px-3 text-xs">
             もっと見る＞
           </Link>
         </div>
@@ -104,9 +85,9 @@ export default function () {
             />
           ))}
         </div>
-        <div className="m-5" />
+        <div className="h-5" />
       </div>
-      <div className="p-20" />
+      <div className="h-20" />
       <div className="fixed bottom-0 w-full">
         <Footer />
       </div>
