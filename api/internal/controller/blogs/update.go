@@ -9,11 +9,11 @@ import (
 )
 
 type updateRequest struct {
-	BlogID           uint   `param:"blogId"`
-	Title            string `json:"title" validate:"required,max=64"`
-	Content          string `json:"content" validate:"required"`
-	TagIds           []uint `json:"tagIds"`
-	ThumbnailImageID uint   `json:"thumbnailImageId" validate:"required"`
+	BlogID           uint    `param:"blogId"`
+	Title            *string `json:"title" validate:"omitempty,max=64,min=1"`
+	Content          *string `json:"content" validate:"omitempty,min=1"`
+	TagIds           *[]uint `json:"tagIds"`
+	ThumbnailImageID *uint   `json:"thumbnailImageId"`
 }
 
 type updateResponse struct {
@@ -25,44 +25,47 @@ func Update(cc *custom.Context) error {
 	var req updateRequest
 	cc.BindValidate(&req, map[string]map[string]string{
 		"title": {
-			"required": "タイトルは必須です。",
-			"max":      "タイトルは64文字以内で入力してください。",
+			"max": "タイトルは64文字以内で入力してください。",
+			"min": "タイトルは1文字以上で入力してください。",
 		},
 		"content": {
-			"required": "内容は必須です。",
-		},
-		"thumbnailImageId": {
-			"required": "サムネイル画像は必須です。",
+			"min": "内容は1文字以上で入力してください。",
 		},
 	})
 
 	err := cc.DB.Transaction(func(tx *gorm.DB) error {
-		// idは変更ないのでいらないと思うが、id無しだと失敗した。gormの仕様？？
-		newBlog := model.Blog{
-			Model: gorm.Model{
-				ID: req.BlogID,
-			},
-			Title:            req.Title,
-			Content:          req.Content,
-			ThumbnailImageID: req.ThumbnailImageID,
+		// gormはゼロ値を無視するため、mapにする
+		newBlog := map[string]any{}
+		if req.Title != nil {
+			newBlog["title"] = *req.Title
+		}
+		if req.Content != nil {
+			newBlog["content"] = *req.Content
+		}
+		if req.ThumbnailImageID != nil {
+			newBlog["thumbnail_image_id"] = *req.ThumbnailImageID
 		}
 
-		result := tx.Where("id = ? AND deleted_at IS NULL", req.BlogID).
-			Updates(&newBlog)
+		if len(newBlog) > 0 {
+			result := tx.Model(&model.Blog{}).Where("id = ? AND deleted_at IS NULL", req.BlogID).
+				Updates(newBlog)
 
-		if result.Error != nil || result.RowsAffected == 0 {
-			return fmt.Errorf("ブログの更新に失敗")
+			if result.Error != nil || result.RowsAffected == 0 {
+				return fmt.Errorf("ブログの更新に失敗")
+			}
 		}
 
-		// タグは常に全て更新する。
-		tags := make([]model.Tag, len(req.TagIds))
-		for i, id := range req.TagIds {
-			tags[i] = model.Tag{Model: gorm.Model{
-				ID: id,
-			}}
-		}
-		if err := tx.Model(&newBlog).Association("Tags").Replace(&tags); err != nil {
-			return err
+		if req.TagIds != nil {
+			targetBlog := model.Blog{Model: gorm.Model{ID: req.BlogID}}
+
+			tags := make([]model.Tag, len(*req.TagIds))
+			for i, id := range *req.TagIds {
+				tags[i] = model.Tag{Model: gorm.Model{ID: id}}
+			}
+
+			if err := tx.Model(&targetBlog).Association("Tags").Replace(&tags); err != nil {
+				return err
+			}
 		}
 
 		return nil
