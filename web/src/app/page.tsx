@@ -1,3 +1,5 @@
+"use client";
+
 import { BlogIndexResponse } from "@/lib/api/blog-index";
 import { useState } from "react";
 
