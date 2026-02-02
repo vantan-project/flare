@@ -10,11 +10,20 @@ export type BlogIndexRequest = {
 };
 
 export type BlogIndexResponse = {
+  id : number;
   title: string;
   thumbnailImageUrl: string;
-  userId: number[];
+  user: {
+    id: number;
+    name: string;
+    iconImageUrl: string;
+  };
+  tags: {
+    id: number;
+    name: string;
+  }[]
   wishesCount: number;
-  tags: string[];
+  bookmarksCount: number;
   updateAt: string;
 }[];
 

@@ -23,7 +23,7 @@ type loginResponse struct {
 
 func Login(cc *custom.Context) error {
 	var req loginRequest
-	cc.Validate(&req, map[string]map[string]string{
+	cc.BindValidate(&req, map[string]map[string]string{
 		"email": {
 			"required": "メールアドレスは必須です。",
 			"email":    "有効なメールアドレスを入力してください。",
