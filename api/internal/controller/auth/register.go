@@ -25,7 +25,7 @@ type registerResponse struct {
 func Register(cc *custom.Context) error {
 	var req registerRequest
 	// ここのバリデーションでreqの中身に入力されたデータを入れている。
-	cc.Validate(&req, map[string]map[string]string{
+	cc.BindValidate(&req, map[string]map[string]string{
 		"name": {
 			"required": "ユーザー名は必須です。",
 			"max":      "ユーザー名は20文字以内で入力してください。",

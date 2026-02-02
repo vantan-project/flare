@@ -5,5 +5,3 @@ services:
       - .:/workdir
     ports:
       - 8087:8080
-    environment:
-      - GOPROXY=https://proxy.golang.org,direct
