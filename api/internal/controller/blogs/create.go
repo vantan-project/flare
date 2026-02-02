@@ -12,7 +12,7 @@ type createRequest struct {
 	Title            string `json:"title" validate:"required,max=64"`
 	Content          string `json:"content" validate:"required"`
 	TagIds           []uint `json:"tagIds"`
-	ThumbnailImageID uint   `json:"thumbnailImageId" validate:"required,min=1"`
+	ThumbnailImageID uint   `json:"thumbnailImageId" validate:"required"`
 }
 
 type createResponse struct {
@@ -23,16 +23,13 @@ type createResponse struct {
 
 func Create(cc *custom.Context) error {
 	var req createRequest
-	cc.Validate(&req, map[string]map[string]string{
+	cc.BindValidate(&req, map[string]map[string]string{
 		"title": {
 			"required": "タイトルは必須です。",
 			"max":      "タイトルは64文字以内で入力してください。",
 		},
 		"content": {
 			"required": "内容は必須です。",
-		},
-		"tagIds": {
-			"required": "タグは必須です。",
 		},
 		"thumbnailImageId": {
 			"required": "サムネイル画像は必須です。",

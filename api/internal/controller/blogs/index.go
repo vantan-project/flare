@@ -39,7 +39,7 @@ type indexResponse struct {
 
 func Index(cc *custom.Context) error {
 	var req indexReqest
-	cc.Validate(&req, nil)
+	cc.BindValidate(&req, nil)
 
 	query := cc.DB.Model(&model.Blog{})
 	// ユーザーIDが存在していた場合。

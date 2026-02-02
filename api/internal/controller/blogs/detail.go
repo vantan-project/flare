@@ -33,7 +33,7 @@ type user struct {
 
 func Detail(cc *custom.Context) error {
 	var req detailRequest
-	cc.Validate(&req, nil)
+	cc.BindValidate(&req, nil)
 
 	var blog model.Blog
 	query := cc.DB.Model(&model.Blog{}).
