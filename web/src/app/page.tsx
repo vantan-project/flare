@@ -105,24 +105,6 @@ export default function () {
           ))}
         </div>
         <div className="m-5" />
-        <div className="mb-3">
-          投稿一覧
-          <Link href="/" className="px-3">
-            もっと見る＞
-          </Link>
-        </div>
-        <div className="flex flex-col gap-3">
-          {newBlogs.map((b) => (
-            <BlogSideCard
-              key={b.id}
-              title={b.title}
-              user={b.user}
-              wishedCount={b.wishesCount}
-              bookmarkedCount={b.bookmarksCount}
-              thumbnailImageUrl={b.thumbnailImageUrl}
-            />
-          ))}
-        </div>
       </div>
       <div className="p-20" />
       <div className="fixed bottom-0 w-full">
