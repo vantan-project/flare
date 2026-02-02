@@ -6,6 +6,7 @@ import { authMe } from "@/lib/api/auth-me";
 import { useErrorStore } from "@/stores/use-error-store";
 import { useMeStore } from "@/stores/use-me-store";
 import { useToastStore } from "@/stores/use-toast-store";
+import { accessToken } from "@/utils/access-token";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -28,6 +29,7 @@ function Page() {
       switch (res.status) {
         case "success":
           addToast("success", res.message);
+          accessToken.set(res.accessToken);
           meApi();
           router.push("/");
           break;
