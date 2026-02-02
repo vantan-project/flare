@@ -31,7 +31,9 @@ export function BlogSideCard({
       </div>
 
       <div className="flex flex-col gap-2">
-        <div className="font-bold line-clamp-2 break-all">{title}</div>
+        <div className="font-medium line-clamp-2 break-all leading-4 h-8">
+          {title}
+        </div>
 
         <div className="flex justify-between">
           <div className="flex items-center gap-1">
