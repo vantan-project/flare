@@ -14,6 +14,7 @@ export default function () {
       iconImageUrl: "https://placehold.jp/300x200.png",
     },
     wishesCount: 23,
+    bookmarksCount: 23,
     tags: [
       { id: 1, name: "タグ" },
       { id: 2, name: "タグ" },
