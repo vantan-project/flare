@@ -1,7 +1,7 @@
 package blogs
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/vantan-project/flare/internal/custom"
 	"github.com/vantan-project/flare/internal/model"
@@ -35,48 +35,34 @@ func Update(cc *custom.Context) error {
 			"required": "サムネイル画像は必須です。",
 		},
 	})
-	// ブログの取得
-	var blog model.Blog
-	if err := cc.DB.Where("id = ?", req.BlogID).
-		Where("deleted_at IS NULL").
-		First(&blog).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return cc.JSON(404, updateResponse{
-				Status:  "error",
-				Message: "更新するブログが存在しません。",
-			})
-		}
-	}
-
-	// 認証ユーザーのブログであるかどうか
-	// if blog.UserID != cc.AuthID {
-	// 	return cc.JSON(403, updateResponse{
-	// 		Status:  "error",
-	// 		Message: "このブログは更新できません。",
-	// 	})
-	// }
 
 	err := cc.DB.Transaction(func(tx *gorm.DB) error {
+		// idは変更ないのでいらないと思うが、id無しだと失敗した。gormの仕様？？
 		newBlog := model.Blog{
+			Model: gorm.Model{
+				ID: req.BlogID,
+			},
 			Title:            req.Title,
 			Content:          req.Content,
 			ThumbnailImageID: req.ThumbnailImageID,
 		}
 
-		if err := tx.Where("id = ?", req.BlogID).Updates(&newBlog).Error; err != nil {
-			return err
+		result := tx.Where("id = ? AND deleted_at IS NULL", req.BlogID).
+			Updates(&newBlog)
+
+		if result.Error != nil || result.RowsAffected == 0 {
+			return fmt.Errorf("ブログの更新に失敗")
 		}
 
-		if len(req.TagIds) > 0 {
-			tags := make([]model.Tag, len(req.TagIds))
-			for i, id := range req.TagIds {
-				tags[i] = model.Tag{Model: gorm.Model{
-					ID: id,
-				}}
-			}
-			if err := tx.Model(&blog).Association("Tags").Replace(&tags); err != nil {
-				return err
-			}
+		// タグは常に全て更新する。
+		tags := make([]model.Tag, len(req.TagIds))
+		for i, id := range req.TagIds {
+			tags[i] = model.Tag{Model: gorm.Model{
+				ID: id,
+			}}
+		}
+		if err := tx.Model(&newBlog).Association("Tags").Replace(&tags); err != nil {
+			return err
 		}
 
 		return nil
