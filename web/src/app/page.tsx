@@ -88,7 +88,7 @@ export default function () {
         <div className="m-5" />
         <div className="mb-3">
           新着投稿
-          <Link href="https://www.youareanidiot.cc/" className="px-3">
+          <Link href="/" className="px-3">
             もっと見る＞
           </Link>
         </div>
@@ -107,7 +107,7 @@ export default function () {
         <div className="m-5" />
         <div className="mb-3">
           投稿一覧
-          <Link href="https://www.youareanidiot.cc/" className="px-3">
+          <Link href="/" className="px-3">
             もっと見る＞
           </Link>
         </div>
