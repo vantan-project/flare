@@ -1,9 +1,12 @@
 import { Add } from "./svgs/add";
 import { BookMark } from "./svgs/bookmark";
+import { Error } from "./svgs/error";
 import { Flare } from "./svgs/flare";
 import { Home } from "./svgs/home";
 import { Person } from "./svgs/person";
 import { Profile } from "./svgs/profile";
+import { Sort } from "./svgs/sort";
+import { Success } from "./svgs/success";
 
 const icons = {
   flare: Flare,
@@ -12,6 +15,9 @@ const icons = {
   home: Home,
   add: Add,
   profile: Profile,
+  sort: Sort,
+  success: Success,
+  error: Error,
 } as const;
 
 export type IconProps = {

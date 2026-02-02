@@ -8,7 +8,7 @@ import (
 )
 
 // 認証ミドルウェア
-func AuthMiddleware(next custom.HandlerFunc) custom.HandlerFunc {
+func Auth(next custom.HandlerFunc) custom.HandlerFunc {
 	return func(cc *custom.Context) error {
 		authHeader := cc.Request().Header.Get("Authorization")
 		if authHeader == "" {

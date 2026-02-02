@@ -28,7 +28,8 @@ func main() {
 	}
 
 	e := custom.NewEcho(db, storage, ai)
-	e.Use(middleware.RecoverMiddleware)
+	e.Use(middleware.CORS)
+	e.Use(middleware.Recover)
 
 	e.GET("/", func(cc *custom.Context) error {
 		return cc.JSON(http.StatusOK, "Hello Echo!")
