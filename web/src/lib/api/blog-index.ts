@@ -23,6 +23,7 @@ export type BlogIndexResponse = {
     name: string;
   }[]
   wishesCount: number;
+  bookmarksCount: number;
   updateAt: string;
 }[];
 
