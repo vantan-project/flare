@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/vantan-project/flare/internal/controller/auth"
 	"github.com/vantan-project/flare/internal/controller/blogs"
+	"github.com/vantan-project/flare/internal/controller/images"
 	"github.com/vantan-project/flare/internal/controller/tags"
 	"github.com/vantan-project/flare/internal/custom"
 	"github.com/vantan-project/flare/internal/middleware"
@@ -28,4 +29,7 @@ func Api(e *custom.Group) {
 	t := e.Group("/tags")
 	t.GET("", tags.Index)
 	t.POST("", tags.Create, middleware.Auth)
+
+	i := e.Group("/images")
+	i.POST("", images.Upload)
 }
