@@ -10,7 +10,6 @@ import { useErrorStore } from "@/stores/use-error-store";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import { useState } from "react";
 
 type Form = AuthRegisterRequest & {
   passwordConf: string;
