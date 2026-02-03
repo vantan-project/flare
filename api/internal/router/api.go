@@ -22,6 +22,8 @@ func Api(e *custom.Group) {
 	b.DELETE("/:blogId", blogs.Delete, middleware.Auth)
 	b.POST("/:blogId/wish", blogs.Wish, middleware.Auth)
 	b.DELETE("/:blogId/wish", blogs.Diswish, middleware.Auth)
+	b.POST("/:blogId/bookmark", blogs.Bookmark, middleware.Auth)
+	b.DELETE("/:blogId/bookmark", blogs.Disbookmark, middleware.Auth)
 
 	t := e.Group("/tags")
 	t.GET("", tags.Index)
