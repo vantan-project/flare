@@ -18,10 +18,6 @@ export type BlogIndexResponse = {
     name: string;
     iconImageUrl: string;
   };
-  tags: {
-    id: number;
-    name: string;
-  }[]
   wishesCount: number;
   bookmarksCount: number;
   updateAt: string;

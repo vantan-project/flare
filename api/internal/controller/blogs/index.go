@@ -85,10 +85,6 @@ func Index(cc *custom.Context) error {
 
 	data := make([]indexResponseData, len(blogs))
 	for i, blog := range blogs {
-		var tags []string
-		for _, tag := range blog.Tags {
-			tags = append(tags, tag.Name)
-		}
 		data[i] = indexResponseData{
 			Id:                blog.ID,
 			Title:             blog.Title,
@@ -100,7 +96,6 @@ func Index(cc *custom.Context) error {
 			},
 			WishesCount:    uint(blog.WishedCount),
 			BookmarksCount: uint(blog.BookmarkedCount),
-			Tags:           tags,
 			UpdatedAt:      blog.UpdatedAt.Format(time.DateTime),
 		}
 	}
