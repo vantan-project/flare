@@ -2,7 +2,7 @@ import { fetchApi } from "@/utils/fetch-api";
 import { QueryResponse } from "../query-response";
 
 export type BlogIndexRequest = {
-  orderBy: "createdAt" | "flarePoint" | "corePoint";
+  orderBy: "createdAt" | "flarePoint" | "corePoint" | "wish" | "bookmark";
   limit: number | null;
   offset: number | null;
   userId: number | null;
