@@ -30,6 +30,11 @@ func Auth(next custom.HandlerFunc) custom.HandlerFunc {
 				"error": err.Error(),
 			})
 		}
+		// if err := cc.DB.Where("id = ? AND deleted_at IS NULL", authID).First(&model.User{}).Error; err != nil {
+		// 	return cc.JSON(401, map[string]string{
+		// 		"error": err.Error(),
+		// 	})
+		// }
 
 		// コンテキストにユーザーIDを設定
 		cc.AuthID = authID
