@@ -16,6 +16,6 @@ type Blog struct {
 	User             User
 	Image            Image `gorm:"foreignKey:ThumbnailImageID"`
 
-	WishedCount     int64 `gorm:"-"`
-	BookmarkedCount int64 `gorm:"-"`
+	WishedCount     int64 `gorm:"->"`
+	BookmarkedCount int64 `gorm:"->"`
 }
