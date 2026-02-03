@@ -7,6 +7,7 @@ import { Person } from "./svgs/person";
 import { Profile } from "./svgs/profile";
 import { Sort } from "./svgs/sort";
 import { Success } from "./svgs/success";
+import { Toggle } from "./svgs/toggle";
 
 const icons = {
   flare: Flare,
@@ -18,6 +19,7 @@ const icons = {
   sort: Sort,
   success: Success,
   error: Error,
+  toggle: Toggle,
 } as const;
 
 export type IconProps = {
