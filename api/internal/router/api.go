@@ -18,4 +18,6 @@ func Api(e *custom.Group) {
 	b.POST("", blogs.Create, middleware.Auth)
 	b.PATCH("/:blogId", blogs.Update, middleware.Auth)
 	b.DELETE("/:blogId", blogs.Delete, middleware.Auth)
+	b.POST("/:blogId/wish", blogs.Wish, middleware.Auth)
+	b.DELETE("/:blogId/wish", blogs.Diswish, middleware.Auth)
 }
