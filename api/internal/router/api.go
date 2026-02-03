@@ -15,6 +15,7 @@ func Api(e *custom.Group) {
 	a.POST("/login", auth.Login)
 	a.GET("/me", auth.Me, middleware.Auth)
 	a.PATCH("/me", auth.Update, middleware.Auth)
+	a.DELETE("/destroy", auth.Delete, middleware.Auth)
 
 	b := e.Group("/blogs")
 	b.GET("", blogs.Index)
