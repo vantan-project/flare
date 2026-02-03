@@ -49,16 +49,7 @@ func Index(cc *custom.Context) error {
 	if req.DaysAgo != nil {
 		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, int(*req.DaysAgo)))
 	}
-	if req.OrderBy != nil {
-		switch *req.OrderBy {
-		case "createdAt":
-			query = query.Order("created_at DESC")
-		case "flarePoint":
-			query = query.Order("flare_point DESC")
-		case "corePoint":
-			query = query.Order("core_point DESC")
-		}
-	}
+
 	if req.Limit != nil {
 		query = query.Limit(*req.Limit)
 	}
@@ -77,6 +68,21 @@ func Index(cc *custom.Context) error {
 		Preload("User.Profile.Image").
 		Preload("Tags").
 		Preload("Image")
+
+	if req.OrderBy != nil {
+		switch *req.OrderBy {
+		case "createdAt":
+			query = query.Order("created_at DESC")
+		case "flarePoint":
+			query = query.Order("flare_point DESC")
+		case "corePoint":
+			query = query.Order("core_point DESC")
+		case "wish":
+			query = query.Order("WishedCount DESC")
+		case "bookmark":
+			query = query.Order("BookmarkedCount DESC")
+		}
+	}
 
 	var blogs []model.Blog
 	if err := query.Find(&blogs).Error; err != nil {
