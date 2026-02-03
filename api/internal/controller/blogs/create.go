@@ -43,7 +43,7 @@ func Create(cc *custom.Context) error {
 			FlarePoint: 0,
 			CorePoint:  0,
 			// ダミー。ミドルウェアがなおったらcc.AuthIDを使用する。
-			UserID:           2,
+			UserID:           cc.AuthID,
 			ThumbnailImageID: req.ThumbnailImageID,
 		}
 		if err := tx.Create(&blog).Error; err != nil {

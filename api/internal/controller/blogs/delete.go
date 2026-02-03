@@ -18,7 +18,7 @@ func Delete(cc *custom.Context) error {
 	var req deleteRequest
 	cc.BindValidate(&req, nil)
 
-	if err := cc.DB.Where("id = ? AND deleted_at IS NULL", req.BlogID).
+	if err := cc.DB.Where("id = ? AND deleted_at IS NULL AND user_id = ?", req.BlogID, cc.AuthID).
 		Delete(&model.Blog{}).Error; err != nil {
 		return cc.JSON(500, deleteResponse{
 			Status:  "error",
