@@ -16,7 +16,7 @@ type Form = AuthRegisterRequest & {
 };
 
 function Page() {
-  const { register, handleSubmit, getValues } = useForm<Form>();
+  const { register, handleSubmit } = useForm<Form>();
   const { addToast } = useToastStore();
   const { setMe } = useMeStore();
   const { setErrors } = useErrorStore();
