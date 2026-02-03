@@ -1,27 +1,16 @@
 import { fetchApi } from "@/utils/fetch-api";
 import { QueryResponse } from "../query-response";
+import { BlogIndexResponse } from "./blog-index";
 
-export type BlogsWishIndexRequest = {
+export type BlogWishIndexRequest = {
   limit: number | null;
   offset: number | null;
 };
 
-export type BlogsWishIndexResponse = {
-  id: number;
-  title: string;
-  thumbnailImageUrl: string;
-  wishesCount: number;
-  tags: string[];
-  user: {
-    id: number;
-    name: string;
-    icon: string;
-  };
-  updatedAt: string;
-}[];
+export type BlogWishIndexResponse = BlogIndexResponse;
 
 export function blogsWishIdex(
-  req: BlogsWishIndexRequest
-): Promise<QueryResponse<BlogsWishIndexResponse>> {
+  req: BlogWishIndexRequest
+): Promise<QueryResponse<BlogWishIndexResponse>> {
   return fetchApi("GET", "/blogs/wish", req);
 }

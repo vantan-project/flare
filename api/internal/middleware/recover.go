@@ -6,7 +6,7 @@ import (
 	"github.com/vantan-project/flare/internal/custom"
 )
 
-func RecoverMiddleware(next custom.HandlerFunc) custom.HandlerFunc {
+func Recover(next custom.HandlerFunc) custom.HandlerFunc {
 	return func(cc *custom.Context) error {
 		defer func() {
 			if r := recover(); r != nil {

@@ -10,6 +10,7 @@ type Echo struct {
 	DB        *Gorm
 	Storage   *S3
 	AI        *AI
+	AuthID    uint
 	Validator echo.Validator
 	Logger    echo.Logger
 	// 外部で使うものがあれば追加していく
@@ -35,6 +36,7 @@ func (ce *Echo) Wrap(ch HandlerFunc) echo.HandlerFunc {
 			DB:      ce.DB,
 			Storage: ce.Storage,
 			AI:      ce.AI,
+			AuthID:  ce.AuthID,
 		}
 		return ch(cc) // custom.Context を渡す
 	}
@@ -48,6 +50,7 @@ func (ce *Echo) WrapMiddleware(cm MiddlewareFunc) echo.MiddlewareFunc {
 				DB:      ce.DB,
 				Storage: ce.Storage,
 				AI:      ce.AI,
+				AuthID:  ce.AuthID,
 			}
 			customNext := func(ctx *Context) error {
 				return next(ctx)
