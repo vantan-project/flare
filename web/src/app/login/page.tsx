@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 function Page() {
-  const { register, handleSubmit, getValues } = useForm<AuthLoginRequest>();
+  const { register, handleSubmit } = useForm<AuthLoginRequest>();
   const { setErrors } = useErrorStore();
   const { addToast } = useToastStore();
   const { setMe } = useMeStore();

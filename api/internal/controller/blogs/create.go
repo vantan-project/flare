@@ -38,10 +38,11 @@ func Create(cc *custom.Context) error {
 	err := cc.DB.Transaction(func(tx *gorm.DB) error {
 		// ブログの作成
 		blog := model.Blog{
-			Title:            req.Title,
-			Content:          req.Content,
-			FlarePoint:       0,
-			CorePoint:        0,
+			Title:      req.Title,
+			Content:    req.Content,
+			FlarePoint: 0,
+			CorePoint:  0,
+			// ダミー。ミドルウェアがなおったらcc.AuthIDを使用する。
 			UserID:           cc.AuthID,
 			ThumbnailImageID: req.ThumbnailImageID,
 		}
