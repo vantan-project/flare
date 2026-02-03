@@ -44,7 +44,7 @@ export function BlogSideCard({
                 fill
               />
             </div>
-            <div>{user.name}</div>
+            <div className="text-[12px]">{user.name}</div>
           </div>
           <div className="flex gap-1 text-gray">
             <div className="flex items-center gap-0.5">
