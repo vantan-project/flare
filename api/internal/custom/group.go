@@ -10,6 +10,7 @@ type Group struct {
 	DB      *Gorm
 	Storage *S3
 	AI      *AI
+	AuthID  uint
 }
 
 func (cg *Group) Wrap(ch HandlerFunc) echo.HandlerFunc {
@@ -19,6 +20,7 @@ func (cg *Group) Wrap(ch HandlerFunc) echo.HandlerFunc {
 			DB:      cg.DB,
 			Storage: cg.Storage,
 			AI:      cg.AI,
+			AuthID:  cg.AuthID,
 		}
 		return ch(cc) // custom.Context を渡す
 	}
@@ -32,6 +34,7 @@ func (cg *Group) WrapMiddleware(cm MiddlewareFunc) echo.MiddlewareFunc {
 				DB:      cg.DB,
 				Storage: cg.Storage,
 				AI:      cg.AI,
+				AuthID:  cg.AuthID,
 			}
 			customNext := func(ctx *Context) error {
 				return next(ctx)

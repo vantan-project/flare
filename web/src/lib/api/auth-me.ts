@@ -5,8 +5,8 @@ export type AuthMeResponse = {
   id: number;
   name: string;
   iconImageUrl: string;
-  wishesCount: number[];
-  bookmarksCount: number[];
+  wishedIds: number[];
+  bookmarkedIds: number[];
 };
 
 export function authMe(): Promise<QueryResponse<AuthMeResponse>> {

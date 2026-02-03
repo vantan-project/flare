@@ -1,4 +1,4 @@
-import Input from "@/components/input/input";
+import { Input } from "@/components/input/input";
 import Link from "next/link";
 
 function Page() {
@@ -9,30 +9,22 @@ function Page() {
           新規登録
         </div>
 
-        <Input
-          label="ユーザー名"
-          errorMessage="ユーザー名は必須です。"
-          placeholder="ユーザー名"
-          type="text"
-        />
+        <Input label="ユーザー名" placeholder="ユーザー名" type="text" />
 
         <Input
           label="メールアドレス"
-          errorMessage=""
           placeholder="example@mail.com"
           type="text"
         />
 
         <Input
           label="パスワード"
-          errorMessage=""
           placeholder="パスワード入力"
           type="password"
         />
 
         <Input
           label="パスワード確認"
-          errorMessage=""
           placeholder="パスワードを入力"
           type="password"
         />
