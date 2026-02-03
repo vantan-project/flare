@@ -15,12 +15,15 @@ type Group struct {
 
 func (cg *Group) Wrap(ch HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		cc := &Context{
-			Context: c,
-			DB:      cg.DB,
-			Storage: cg.Storage,
-			AI:      cg.AI,
-			AuthID:  cg.AuthID,
+		cc, ok := c.(*Context)
+		if !ok {
+			cc = &Context{
+				Context: c,
+				DB:      cg.DB,
+				Storage: cg.Storage,
+				AI:      cg.AI,
+				AuthID:  cg.AuthID,
+			}
 		}
 		return ch(cc) // custom.Context を渡す
 	}
@@ -29,12 +32,15 @@ func (cg *Group) Wrap(ch HandlerFunc) echo.HandlerFunc {
 func (cg *Group) WrapMiddleware(cm MiddlewareFunc) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &Context{
-				Context: c,
-				DB:      cg.DB,
-				Storage: cg.Storage,
-				AI:      cg.AI,
-				AuthID:  cg.AuthID,
+			cc, ok := c.(*Context)
+			if !ok {
+				cc = &Context{
+					Context: c,
+					DB:      cg.DB,
+					Storage: cg.Storage,
+					AI:      cg.AI,
+					AuthID:  cg.AuthID,
+				}
 			}
 			customNext := func(ctx *Context) error {
 				return next(ctx)
@@ -95,6 +101,7 @@ func (cg *Group) Group(prefix string, m ...MiddlewareFunc) *Group {
 		DB:      cg.DB,
 		Storage: cg.Storage,
 		AI:      cg.AI,
+		AuthID:  cg.AuthID,
 	}
 }
 

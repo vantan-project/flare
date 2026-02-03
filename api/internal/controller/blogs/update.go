@@ -32,7 +32,6 @@ func Update(cc *custom.Context) error {
 			"min": "内容は1文字以上で入力してください。",
 		},
 	})
-
 	err := cc.DB.Transaction(func(tx *gorm.DB) error {
 		// gormはゼロ値を無視するため、mapにする
 		newBlog := map[string]any{}
@@ -47,7 +46,7 @@ func Update(cc *custom.Context) error {
 		}
 
 		if len(newBlog) > 0 {
-			result := tx.Model(&model.Blog{}).Where("id = ? AND deleted_at IS NULL", req.BlogID).
+			result := tx.Model(&model.Blog{}).Where("id = ? AND deleted_at IS NULL AND user_id = ?", req.BlogID, cc.AuthID).
 				Updates(newBlog)
 
 			if result.Error != nil || result.RowsAffected == 0 {
