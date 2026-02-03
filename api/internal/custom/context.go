@@ -72,7 +72,7 @@ func (cc *Context) BindValidate(i interface{}, rules map[string]map[string]strin
 	}
 
 	cc.JSON(http.StatusUnprocessableEntity, validateRessponse{
-		Status:      "Validation",
+		Status:      "validation",
 		FieldErrors: fieldErrors,
 	})
 	panic(Panic{})

@@ -16,11 +16,11 @@ func Api(e *custom.Group) {
 	b := e.Group("/blogs")
 	b.GET("", blogs.Index)
 	b.GET("/:blogId", blogs.Detail)
-	b.POST("", blogs.Create, middleware.AuthMiddleware)
-	b.PATCH("/:blogId/update", blogs.Update, middleware.AuthMiddleware)
-	b.DELETE("/:blogId/delete", blogs.Delete, middleware.AuthMiddleware)
+	b.POST("", blogs.Create, middleware.Auth)
+	b.PATCH("/:blogId", blogs.Update, middleware.Auth)
+	b.DELETE("/:blogId", blogs.Delete, middleware.Auth)
 
 	t := e.Group("/tags")
 	t.GET("", tags.Index)
-	t.POST("", tags.Create, middleware.AuthMiddleware)
+	t.POST("", tags.Create, middleware.Auth)
 }
