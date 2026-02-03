@@ -23,7 +23,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div
           className={cn(
             "flex gap-2 p-4 border rounded-2xl focus-within:border-primary",
-            error && "bg-error/20 border-error",
+            error && "bg-error/20 border-error"
           )}
         >
           <input
@@ -40,12 +40,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <p
           className={cn(
             "h-lh text-error text-xs leading-none ml-2 mt-1",
-            !error && "opacity-0",
+            !error && "opacity-0"
           )}
         >
           {error}
         </p>
       </label>
     );
-  },
+  }
 );
