@@ -1,24 +1,13 @@
 import { fetchApi } from "@/utils/fetch-api";
 import { QueryResponse } from "../query-response";
+import { BlogIndexResponse } from "./blog-index";
 
 export type BlogBookmarkIndexRequest = {
   limit: number | null;
   offset: number | null;
 };
 
-export type BlogBookmarkIndexResponse = {
-  id: number;
-  title: string;
-  thumbnailImageUrl: string;
-  wishesCount: number;
-  tags: string[];
-  user: {
-    id: number;
-    name: string;
-    icon: string;
-  };
-  updatedAt: string;
-}[];
+export type BlogBookmarkIndexResponse = BlogIndexResponse;
 
 export function blogBookmarkIndex(
   req: BlogBookmarkIndexRequest
