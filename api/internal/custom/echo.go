@@ -31,12 +31,14 @@ func NewEcho(db *Gorm, storage *S3, ai *AI) *Echo {
 
 func (ce *Echo) Wrap(ch HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		cc := &Context{
-			Context: c,
-			DB:      ce.DB,
-			Storage: ce.Storage,
-			AI:      ce.AI,
-			AuthID:  ce.AuthID,
+		cc, ok := c.(*Context)
+		if !ok {
+			cc = &Context{
+				Context: c,
+				DB:      ce.DB,
+				Storage: ce.Storage,
+				AI:      ce.AI,
+			}
 		}
 		return ch(cc) // custom.Context を渡す
 	}
@@ -45,12 +47,14 @@ func (ce *Echo) Wrap(ch HandlerFunc) echo.HandlerFunc {
 func (ce *Echo) WrapMiddleware(cm MiddlewareFunc) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &Context{
-				Context: c,
-				DB:      ce.DB,
-				Storage: ce.Storage,
-				AI:      ce.AI,
-				AuthID:  ce.AuthID,
+			cc, ok := c.(*Context)
+			if !ok {
+				cc = &Context{
+					Context: c,
+					DB:      ce.DB,
+					Storage: ce.Storage,
+					AI:      ce.AI,
+				}
 			}
 			customNext := func(ctx *Context) error {
 				return next(ctx)
@@ -71,6 +75,7 @@ func (ce *Echo) Group(prefix string, m ...MiddlewareFunc) *Group {
 		DB:      ce.DB,
 		Storage: ce.Storage,
 		AI:      ce.AI,
+		AuthID:  ce.AuthID,
 	}
 }
 
