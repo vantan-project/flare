@@ -22,6 +22,7 @@ export function TagSelect({ value, onChange, onSearch }: Props) {
         popoverRef.current &&
         !popoverRef.current.contains(event.target as Node)
       ) {
+        onSearch();
         setIsOpen(false);
       }
     };
@@ -36,8 +37,8 @@ export function TagSelect({ value, onChange, onSearch }: Props) {
   useEffect(() => {
     tagIndex().then((res) => {
       setTags(res.data);
-    })
-  }, [])
+    });
+  }, []);
 
   const baseTags = tags.filter((tag) => tag.name.includes(search));
   const [selectedTags, notSelectedTags] = baseTags.reduce<

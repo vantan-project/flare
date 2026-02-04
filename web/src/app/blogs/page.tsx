@@ -10,10 +10,18 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { set } from "react-hook-form";
 
 export default function BlogPage() {
   const router = useRouter();
-  const [search, setSearch] = useState<BlogIndexRequest>();
+  const [search, setSearch] = useState<BlogIndexRequest>({
+    orderBy: "createdAt",
+    limit: 20,
+    offset: 0,
+    userId: null,
+    daysAgo: null,
+    tagIds: [],
+  });
   const [blogs, setBlogs] = useState<BlogIndexResponse>([]);
   const [tagIds, setTagIds] = useState<number[]>([]);
   const searchParams = useSearchParams();
@@ -54,46 +62,44 @@ export default function BlogPage() {
   }, [search]);
 
   return (
-    <div>
-      <div className="flex items-end justify-end pt-[9px] mx-5 gap-2">
+    <div className="px-4">
+      <div className="flex items-end justify-end pt-[9px] gap-2">
         <SortSelect
-          value={null}
+          value={search?.orderBy || null}
           options={[
             {
               value: "createdAt",
               label: "最新順",
-              onClick: () => router.push("/blogs?orderBy=createdAt"),
+              onClick: () => {
+                setSearch({ ...search, orderBy: "createdAt" });
+              },
             },
             {
               value: "flarePoint",
               label: "熱意度順",
-              onClick: () => router.push("/blogs?orderBy=flarePoint"),
+              onClick: () => setSearch({ ...search, orderBy: "flarePoint" }),
             },
             {
               value: "corePoint",
               label: "コア度順",
-              onClick: () => router.push("/blogs?orderBy=corePoint"),
+              onClick: () => setSearch({ ...search, orderBy: "corePoint" }),
             },
             {
               value: "wish",
               label: "やってみたい順",
-              onClick: () => router.push("/blogs?orderBy=wish"),
+              onClick: () => setSearch({ ...search, orderBy: "wish" }),
             },
             {
               value: "bookmark",
               label: "ブックマーク順",
-              onClick: () => router.push("/blogs?orderBy=bookmark"),
-            }
+              onClick: () => setSearch({ ...search, orderBy: "bookmark" }),
+            },
           ]}
         />
         <TagSelect
           value={tagIds}
           onChange={(v) => setTagIds(v)}
-          onSearch={() =>
-            router.push(
-              `/blogs?tagIds=${encodeURIComponent(JSON.stringify(tagIds))}`,
-            )
-          }
+          onSearch={() => setSearch({ ...search, tagIds: tagIds })}
         />
       </div>
       <div className="pt-2 pb-3">投稿一覧</div>

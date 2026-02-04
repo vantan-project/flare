@@ -36,7 +36,7 @@ export function SortSelect<T extends string>({
   }, [isOpen]);
 
   return (
-    <div className="relative w-28 text-xs">
+    <div className="relative w-36 text-xs z-40">
       <div
         className="py-3 rounded-[20px] bg-white border border-black flex justify-center items-center gap-2 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
