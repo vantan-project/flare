@@ -17,14 +17,13 @@ type indexReqest struct {
 }
 
 type indexResponseData struct {
-	Id                uint     `json:"id"`
-	Title             string   `json:"title"`
-	ThumbnailImageUrl string   `json:"thumbnailImageUrl"`
-	User              User     `json:"user"`
-	WishesCount       uint     `json:"wishesCount"`
-	BookmarksCount    uint     `json:"bookmarksCount"`
-	Tags              []string `json:"tags"`
-	UpdatedAt         string   `json:"updatedAt"`
+	Id                uint   `json:"id"`
+	Title             string `json:"title"`
+	ThumbnailImageUrl string `json:"thumbnailImageUrl,omitempty"`
+	User              User   `json:"user"`
+	WishesCount       uint   `json:"wishesCount"`
+	BookmarksCount    uint   `json:"bookmarksCount"`
+	UpdatedAt         string `json:"updatedAt"`
 }
 
 type User struct {
@@ -62,12 +61,11 @@ func Index(cc *custom.Context) error {
 	}
 
 	// リレーション
-	query = query.Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at," +
-		"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
-		"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount").
-		Preload("User.Profile.Image").
-		Preload("Tags").
-		Preload("Image")
+	query = query.Preload("User.Profile.Image").
+		Preload("Image").
+		Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at," +
+			"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
+			"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount")
 
 	if req.OrderBy != nil {
 		switch *req.OrderBy {
@@ -99,6 +97,10 @@ func Index(cc *custom.Context) error {
 
 	data := make([]indexResponseData, len(blogs))
 	for i, blog := range blogs {
+		var userIconUrl string
+		if blog.User.Profile.Image != nil {
+			userIconUrl = blog.User.Profile.Image.URL
+		}
 		data[i] = indexResponseData{
 			Id:                blog.ID,
 			Title:             blog.Title,
@@ -106,7 +108,7 @@ func Index(cc *custom.Context) error {
 			User: User{
 				Id:          blog.UserID,
 				Name:        blog.User.Profile.Name,
-				UserIconUrl: blog.User.Profile.Image.URL,
+				UserIconUrl: userIconUrl,
 			},
 			WishesCount:    uint(blog.WishedCount),
 			BookmarksCount: uint(blog.BookmarkedCount),

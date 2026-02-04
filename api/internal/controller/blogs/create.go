@@ -3,6 +3,7 @@ package blogs
 import (
 	"github.com/vantan-project/flare/internal/custom"
 	"github.com/vantan-project/flare/internal/model"
+	"github.com/vantan-project/flare/pkg/openapi"
 	"gorm.io/gorm"
 )
 
@@ -38,11 +39,10 @@ func Create(cc *custom.Context) error {
 	err := cc.DB.Transaction(func(tx *gorm.DB) error {
 		// ブログの作成
 		blog := model.Blog{
-			Title:      req.Title,
-			Content:    req.Content,
-			FlarePoint: 0,
-			CorePoint:  0,
-			// ダミー。ミドルウェアがなおったらcc.AuthIDを使用する。
+			Title:            req.Title,
+			Content:          req.Content,
+			FlarePoint:       0,
+			CorePoint:        0,
 			UserID:           cc.AuthID,
 			ThumbnailImageID: req.ThumbnailImageID,
 		}
@@ -72,6 +72,18 @@ func Create(cc *custom.Context) error {
 			Message: "ブログの作成に失敗しました。",
 		})
 	}
+
+	// ここから投稿の分析
+	go func() {
+		// タグの取得
+		if len(req.TagIds) > 0 {
+			var tags []model.Tag
+			if err := cc.DB.Where("id IN (?)", req.TagIds).Find(&tags).Error; err != nil {
+				return
+			}
+		}
+		postData := openapi.PostInput{}
+	}()
 
 	return cc.JSON(200, createResponse{
 		Status:  "success",

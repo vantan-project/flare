@@ -24,7 +24,7 @@ type PostInput struct {
 }
 
 // AnalyzePost は投稿を分析してcore_pointとflare_pointを返す
-func AnalyzePost(ai *custom.AI, ctx context.Context, post PostInput) (*PostAnalysis, error) {
+func Analyze(ai *custom.AI, ctx context.Context, post PostInput) (*PostAnalysis, error) {
 	// 画像数をカウント
 	imageCount := countMarkdownImages(post.Content)
 

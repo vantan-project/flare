@@ -39,7 +39,7 @@ func Detail(cc *custom.Context) error {
 	query := cc.DB.Model(&model.Blog{}).
 		Where("id = ?", req.BlogID).
 		Where("deleted_at IS NULL").
-		Preload("User.profile.Image").
+		Preload("User.Profile.Image").
 		Preload("Tags").
 		Preload("Image").
 		Select("id,title,user_id,thumbnail_image_id,updated_at," +
@@ -57,6 +57,11 @@ func Detail(cc *custom.Context) error {
 		tags = append(tags, tag.Name)
 	}
 
+	var userIconUrl string
+	if blog.User.Profile.Image != nil {
+		userIconUrl = blog.User.Profile.Image.URL
+	}
+
 	return cc.JSON(200, detailResponse{
 		Id:                blog.ID,
 		Title:             blog.Title,
@@ -65,7 +70,7 @@ func Detail(cc *custom.Context) error {
 		User: user{
 			Id:          blog.User.ID,
 			Name:        blog.User.Profile.Name,
-			UserIconUrl: blog.User.Profile.Image.URL,
+			UserIconUrl: userIconUrl,
 		},
 		Tags:           tags,
 		UpdatedAt:      blog.UpdatedAt.Format(time.RFC3339),
