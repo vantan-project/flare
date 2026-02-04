@@ -10,18 +10,11 @@ type meResponse struct {
 }
 
 type myData struct {
-	Id            uint            `json:"id"`
-	Name          string          `json:"name"`
-	IconImageUrl  string          `json:"iconImageUrl"`
-	WishedIds     []wishedIds     `json:"wishedIds"`
-	BookmarkedIds []bookmarkedIds `json:"bookmarkedIds"`
-}
-type wishedIds struct {
-	Id uint `json:"id"`
-}
-
-type bookmarkedIds struct {
-	Id uint `json:"id"`
+	Id            uint   `json:"id"`
+	Name          string `json:"name"`
+	IconImageUrl  string `json:"iconImageUrl"`
+	WishedIds     []uint `json:"wishedIds"`
+	BookmarkedIds []uint `json:"bookmarkedIds"`
 }
 
 func Me(cc *custom.Context) error {
@@ -34,18 +27,14 @@ func Me(cc *custom.Context) error {
 		return cc.JSON(404, nil)
 	}
 
-	wished := make([]wishedIds, len(user.WishedBlogs))
+	wished := make([]uint, len(user.WishedBlogs))
 	for i, blog := range user.WishedBlogs {
-		wished[i] = wishedIds{
-			Id: blog.ID,
-		}
+		wished[i] = blog.ID
 	}
 
-	bookmarked := make([]bookmarkedIds, len(user.BookmarkedBlogs))
+	bookmarked := make([]uint, len(user.BookmarkedBlogs))
 	for i, blog := range user.BookmarkedBlogs {
-		bookmarked[i] = bookmarkedIds{
-			Id: blog.ID,
-		}
+		bookmarked[i] = blog.ID
 	}
 
 	return cc.JSON(200, meResponse{
