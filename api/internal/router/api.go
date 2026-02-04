@@ -3,6 +3,9 @@ package router
 import (
 	"github.com/vantan-project/flare/internal/controller/auth"
 	"github.com/vantan-project/flare/internal/controller/blogs"
+	"github.com/vantan-project/flare/internal/controller/blogs/bookmark"
+	"github.com/vantan-project/flare/internal/controller/blogs/wish"
+	"github.com/vantan-project/flare/internal/controller/images"
 	"github.com/vantan-project/flare/internal/controller/tags"
 	"github.com/vantan-project/flare/internal/custom"
 	"github.com/vantan-project/flare/internal/middleware"
@@ -12,6 +15,9 @@ func Api(e *custom.Group) {
 	a := e.Group("/auth")
 	a.POST("/register", auth.Register)
 	a.POST("/login", auth.Login)
+	a.GET("/me", auth.Me, middleware.Auth)
+	a.PATCH("/me", auth.Update, middleware.Auth)
+	a.DELETE("/destroy", auth.Delete, middleware.Auth)
 
 	b := e.Group("/blogs")
 	b.GET("", blogs.Index)
@@ -20,7 +26,18 @@ func Api(e *custom.Group) {
 	b.PATCH("/:blogId", blogs.Update, middleware.Auth)
 	b.DELETE("/:blogId", blogs.Delete, middleware.Auth)
 
+	b.GET("/wish", wish.Index, middleware.Auth)
+	b.POST("/:blogId/wish", blogs.Wish, middleware.Auth)
+	b.DELETE("/:blogId/wish", blogs.Diswish, middleware.Auth)
+
+	b.GET("/bookmark", bookmark.Index, middleware.Auth)
+	b.POST("/:blogId/bookmark", blogs.Bookmark, middleware.Auth)
+	b.DELETE("/:blogId/bookmark", blogs.Disbookmark, middleware.Auth)
+
 	t := e.Group("/tags")
 	t.GET("", tags.Index)
 	t.POST("", tags.Create, middleware.Auth)
+
+	i := e.Group("/images")
+	i.POST("", images.Upload)
 }

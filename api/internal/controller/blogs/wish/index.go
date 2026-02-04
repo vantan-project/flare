@@ -1,4 +1,4 @@
-package blogs
+package wish
 
 import (
 	"time"
@@ -8,11 +8,8 @@ import (
 )
 
 type indexReqest struct {
-	OrderBy *string `query:"orderBy"`
 	Limit   *int    `query:"limit"`
 	Offset  *int    `query:"offset"`
-	UserId  *uint   `query:"userId"`
-	DaysAgo *uint   `query:"daysAgo"`
 }
 
 type indexResponseData struct {
@@ -41,14 +38,15 @@ func Index(cc *custom.Context) error {
 	var req indexReqest
 	cc.BindValidate(&req, nil)
 
-	query := cc.DB.Model(&model.Blog{})
-	// ユーザーIDが存在していた場合。
-	if req.UserId != nil {
-		query = query.Where("user_id = ?", req.UserId)
-	}
-	if req.DaysAgo != nil {
-		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, int(*req.DaysAgo)))
-	}
+	query := cc.DB.
+    Table("blogs AS b").
+    Joins(`
+        JOIN wishes AS wj
+          ON wj.blog_id = b.id
+         AND wj.deleted_at IS NULL
+    `).
+    Where("wj.user_id = ?", cc.AuthID)
+
 	if req.Limit != nil {
 		query = query.Limit(*req.Limit)
 	}
@@ -61,30 +59,34 @@ func Index(cc *custom.Context) error {
 		return cc.JSON(500, nil)
 	}
 	// リレーション
-	query = query.Select("id,title,user_id,thumbnail_image_id,updated_at," +
-		"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
-		"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount").
+	query = query.Select(`
+				b.id,
+				b.title,
+				b.user_id,
+				b.thumbnail_image_id,
+				b.updated_at,
+				(
+						SELECT COUNT(*)
+						FROM wishes w
+						WHERE w.blog_id = b.id
+							AND w.deleted_at IS NULL
+				) AS wished_count,
+				(
+						SELECT COUNT(*)
+						FROM bookmarks bm
+						WHERE bm.blog_id = b.id
+							AND bm.deleted_at IS NULL
+				) AS bookmarked_count
+		`).
 		Preload("User.Profile.Image").
 		Preload("Tags").
-		Preload("Image")
+		Preload("Image").
+		Order("wj.created_at DESC")
 
-	if req.OrderBy != nil {
-		switch *req.OrderBy {
-		case "createdAt":
-			query = query.Order("created_at DESC")
-		case "flarePoint":
-			query = query.Order("flare_point DESC")
-		case "corePoint":
-			query = query.Order("core_point DESC")
-		case "wish":
-			query = query.Order("WishedCount DESC")
-		case "bookmark":
-			query = query.Order("BookmarkedCount DESC")
-		}
-	}
-
+	// ここでエラー
 	var blogs []model.Blog
 	if err := query.Find(&blogs).Error; err != nil {
+		cc.JSON(200, err)
 		return cc.JSON(500, nil)
 	}
 

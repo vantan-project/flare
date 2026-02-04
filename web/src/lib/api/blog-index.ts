@@ -19,17 +19,15 @@ export type BlogIndexResponse = {
     name: string;
     iconImageUrl: string;
   };
-  tags: {
-    id: number;
-    name: string;
-  }[];
   wishesCount: number;
   bookmarksCount: number;
   updateAt: string;
 }[];
 
 export function blogIndex(
-  req: BlogIndexRequest,
+  req: BlogIndexRequest
 ): Promise<QueryResponse<BlogIndexResponse, { total: number }>> {
   return fetchApi("GET", "/blogs");
+  // TODO: reqを渡すとエラーになってしまう
+  // return fetchApi("GET", "/blogs", req);
 }

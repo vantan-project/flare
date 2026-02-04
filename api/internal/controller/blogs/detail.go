@@ -42,9 +42,9 @@ func Detail(cc *custom.Context) error {
 		Preload("User.profile.Image").
 		Preload("Tags").
 		Preload("Image").
-		Select("id,title,content,user_id,thumbnail_image_id,updated_at," +
-			"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id) as wished_count," +
-			"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id) as bookmarked_count")
+		Select("id,title,user_id,thumbnail_image_id,updated_at," +
+			"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
+			"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount")
 
 	if err := query.First(&blog).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
