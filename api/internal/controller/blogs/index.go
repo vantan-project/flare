@@ -1,6 +1,8 @@
 package blogs
 
 import (
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/vantan-project/flare/internal/custom"
@@ -13,7 +15,7 @@ type indexReqest struct {
 	Offset  *int    `query:"offset"`
 	UserId  *uint   `query:"userId"`
 	DaysAgo *uint   `query:"daysAgo"`
-	TagIds  *[]uint `query:"tagIds"`
+	TagIds  *string `query:"tagIds"`
 }
 
 type indexResponseData struct {
@@ -50,9 +52,20 @@ func Index(cc *custom.Context) error {
 		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, -int(*req.DaysAgo)))
 	}
 
-	if req.TagIds != nil {
-		query = query.Joins("JOIN blog_tags ON blog_tags.blog_id = blogs.id ").
-			Where("blog_tags.tag_id IN (?)", req.TagIds)
+	if req.TagIds != nil && *req.TagIds != "" {
+		// カンマ区切りの文字列を分割してuintの配列に変換
+		tagIdStrs := strings.Split(*req.TagIds, ",")
+		tagIds := make([]uint, 0, len(tagIdStrs))
+		for _, idStr := range tagIdStrs {
+			idStr = strings.TrimSpace(idStr)
+			if id, err := strconv.ParseUint(idStr, 10, 32); err == nil {
+				tagIds = append(tagIds, uint(id))
+			}
+		}
+		if len(tagIds) > 0 {
+			query = query.Distinct().Joins("JOIN blog_tags ON blog_tags.blog_id = blogs.id").
+				Where("blog_tags.tag_id IN (?)", tagIds)
+		}
 	}
 
 	var total int64

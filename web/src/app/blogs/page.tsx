@@ -45,7 +45,9 @@ export default function BlogPage() {
     const userId = getNumParam("userId");
     const daysAgo = getNumParam("daysAgo");
     const strTagIds = params.get("tagIds");
-    const tagIds = strTagIds ? JSON.parse(decodeURIComponent(strTagIds)) : [];
+    const tagIds = strTagIds
+      ? strTagIds.split(',').map(Number).filter(n => !isNaN(n))
+      : [];
 
     setSearch({ orderBy, limit, offset, userId, daysAgo, tagIds });
   }, []);
