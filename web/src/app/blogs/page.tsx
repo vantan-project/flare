@@ -9,12 +9,14 @@ import {
 } from "@/lib/api/blog-index";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function BlogPage() {
   const router = useRouter();
   const [search, setSearch] = useState<BlogIndexRequest>();
   const [blogs, setBlogs] = useState<BlogIndexResponse>([]);
   const [tagIds, setTagIds] = useState<number[]>([]);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -42,8 +44,9 @@ export default function BlogPage() {
     const userId = getNumParam("userId");
     const daysAgo = getNumParam("daysAgo");
     const tagIds = JSON.parse(params.get("tagIds") || "[]");
+    setTagIds(tagIds);
     setSearch({ orderBy, limit, offset, userId, daysAgo, tagIds });
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     if (!search) return;
@@ -71,6 +74,16 @@ export default function BlogPage() {
               label: "コア度順",
               onClick: () => router.push("/blogs?orderBy=corePoint"),
             },
+            {
+              value: "wish",
+              label: "やってみたい順",
+              onClick: () => router.push("/blogs?orderBy=wish"),
+            },
+            {
+              value: "bookmark",
+              label: "ブックマーク順",
+              onClick: () => router.push("/blogs?orderBy=bookmark"),
+            }
           ]}
         />
         <TagSelect

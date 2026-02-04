@@ -70,6 +70,16 @@ function Page() {
               label: "コア度順",
               onClick: () => router.push("/blogs?orderBy=corePoint"),
             },
+            {
+              value: "wish",
+              label: "やってみたい順",
+              onClick: () => router.push("/blogs?orderBy=wish"),
+            },
+            {
+              value: "bookmark",
+              label: "ブックマーク順",
+              onClick: () => router.push("/blogs?orderBy=bookmark"),
+            },
           ]}
         />
 

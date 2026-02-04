@@ -76,9 +76,9 @@ func Index(cc *custom.Context) error {
 		case "corePoint":
 			query = query.Order("blogs.core_point DESC")
 		case "wish":
-			query = query.Order("blogs.WishedCount DESC")
+			query = query.Order("WishedCount DESC")
 		case "bookmark":
-			query = query.Order("blogs.BookmarkedCount DESC")
+			query = query.Order("BookmarkedCount DESC")
 		}
 	}
 
