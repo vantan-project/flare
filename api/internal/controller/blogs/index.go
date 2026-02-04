@@ -47,7 +47,7 @@ func Index(cc *custom.Context) error {
 		query = query.Where("user_id = ?", req.UserId)
 	}
 	if req.DaysAgo != nil {
-		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, int(*req.DaysAgo)))
+		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, -int(*req.DaysAgo)))
 	}
 
 	if req.TagIds != nil {

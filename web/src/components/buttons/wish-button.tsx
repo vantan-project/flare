@@ -49,7 +49,7 @@ export function WishButton({ id, wishedCount }: WishButtonProps) {
   };
 
   return (
-    <button className="flex items-center gap-0.5" onClick={handleClick}>
+    <button className="flex items-center gap-0.5 cursor-pointer" onClick={handleClick}>
       <div className={`${isWished && "text-primary"}`}>
         <Icon
           size={20}

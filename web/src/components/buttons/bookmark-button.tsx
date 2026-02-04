@@ -49,7 +49,7 @@ export function BookmarkButton({ id, bookmarkedCount }: BookmarkButtonProps) {
   };
 
   return (
-    <button className="flex items-center gap-0.5" onClick={handleClick}>
+    <button className="flex items-center gap-0.5 cursor-pointer" onClick={handleClick}>
       <div className={`${isBookmarked && "text-secondary"}`}>
         <Icon
           size={20}

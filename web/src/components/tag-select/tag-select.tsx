@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Icon } from "../icon/icon";
 import { cn } from "@/utils/cn";
 import { motion, AnimatePresence } from "motion/react";
-import { TagIndexResponse } from "@/lib/api/tag-index";
+import { tagIndex, TagIndexResponse } from "@/lib/api/tag-index";
 
 type Props = {
   value: number[];
@@ -14,32 +14,7 @@ export function TagSelect({ value, onChange, onSearch }: Props) {
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [tags, setTags] = useState<TagIndexResponse>([
-    { id: 1, name: "読書" },
-    { id: 2, name: "運動" },
-    { id: 3, name: "ゲーム" },
-    { id: 4, name: "プログラミング" },
-    { id: 5, name: "料理" },
-    { id: 6, name: "お菓子" },
-    { id: 7, name: "音楽" },
-    { id: 8, name: "写真" },
-    { id: 9, name: "動画" },
-    { id: 10, name: "映画" },
-    { id: 11, name: "ネット" },
-    { id: 12, name: "美容" },
-    { id: 13, name: "健康" },
-    { id: 14, name: "健康" },
-    { id: 15, name: "健康" },
-    { id: 16, name: "健康" },
-    { id: 17, name: "健康" },
-    { id: 18, name: "健康" },
-    { id: 19, name: "健康" },
-    { id: 20, name: "健康" },
-    { id: 21, name: "健康" },
-    { id: 22, name: "健康" },
-    { id: 23, name: "健康" },
-    { id: 24, name: "健康" },
-  ]);
+  const [tags, setTags] = useState<TagIndexResponse>([]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,6 +33,12 @@ export function TagSelect({ value, onChange, onSearch }: Props) {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    tagIndex().then((res) => {
+      setTags(res.data);
+    })
+  }, [])
+
   const baseTags = tags.filter((tag) => tag.name.includes(search));
   const [selectedTags, notSelectedTags] = baseTags.reduce<
     [typeof baseTags, typeof baseTags]
@@ -70,7 +51,7 @@ export function TagSelect({ value, onChange, onSearch }: Props) {
   );
 
   return (
-    <div className="relative w-28 text-xs">
+    <div className="relative w-28 text-xs z-50">
       <div
         className="py-3 rounded-[20px] bg-white border border-black flex justify-center items-center gap-2 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
