@@ -162,6 +162,7 @@ export default function () {
       <div className="flex flex-col gap-3">
         {blogs[mode].map((blog) => (
           <BlogSideCard
+            id={blog.id}
             key={blog.id}
             title={blog.title}
             user={blog.user}

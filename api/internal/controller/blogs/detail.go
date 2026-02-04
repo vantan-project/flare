@@ -68,6 +68,11 @@ func Detail(cc *custom.Context) error {
 		})
 	}
 
+	var userIconUrl string
+	if blog.User.Profile.Image.ID != 0 {
+		userIconUrl = blog.User.Profile.Image.URL
+	}
+
 	return cc.JSON(200, detailResponse{
 		Data: rblog{
 			Id:                blog.ID,
@@ -77,7 +82,7 @@ func Detail(cc *custom.Context) error {
 			User: ruser{
 				Id:          blog.User.ID,
 				Name:        blog.User.Profile.Name,
-				UserIconUrl: blog.User.Profile.Image.URL,
+				UserIconUrl: userIconUrl,
 			},
 			Tags:           tags,
 			UpdatedAt:      blog.UpdatedAt.Format("2006-01-02   15:04"),

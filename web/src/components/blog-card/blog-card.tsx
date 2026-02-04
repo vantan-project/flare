@@ -1,7 +1,10 @@
 import { Icon } from "@/components/icon/icon";
 import Image from "next/image";
+import { BookmarkButton } from "../buttons/bookmark-button";
+import { WishButton } from "../buttons/wish-button";
 
 export type BlogCordProps = {
+  id: number;
   title: string;
   user: {
     name: string;
@@ -13,6 +16,7 @@ export type BlogCordProps = {
 };
 
 export function BlogCard({
+  id,
   title,
   user,
   wishedCount,
@@ -44,14 +48,14 @@ export function BlogCard({
           <div>{user.name}</div>
         </div>
         <div className="flex gap-1 text-gray">
-          <div className="flex items-center gap-0.5">
-            <Icon size={20} name="flare" />
-            <p className="text-black">{bookmarkedCount}</p>
-          </div>
-          <div className="flex items-center gap-0.5">
-            <Icon size={20} name="book" />
-            <p className="text-black">{wishedCount}</p>
-          </div>
+          <WishButton
+            id={id}
+            wishedCount={wishedCount}
+          />
+          <BookmarkButton
+            id={id}
+            bookmarkedCount={bookmarkedCount}
+          />
         </div>
       </div>
     </div>

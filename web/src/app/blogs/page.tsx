@@ -9,15 +9,14 @@ import {
 } from "@/lib/api/blog-index";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function BlogPage() {
   const router = useRouter();
-  const [flareBlogs, setFlareRanking] = useState<BlogIndexResponse>([]);
-  const [coreBlogs, setCoreRanking] = useState<BlogIndexResponse>([]);
-  const [newBlogs, setNewBlogs] = useState<BlogIndexResponse>([]);
   const [search, setSearch] = useState<BlogIndexRequest>();
   const [blogs, setBlogs] = useState<BlogIndexResponse>([]);
   const [tagIds, setTagIds] = useState<number[]>([]);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -44,36 +43,15 @@ export default function BlogPage() {
     const offset = getNumParam("offset", 0) ?? 0;
     const userId = getNumParam("userId");
     const daysAgo = getNumParam("daysAgo");
-    const strTagIds = params.get("tagIds");
-    const tagIds = strTagIds ? JSON.parse(decodeURIComponent(strTagIds)) : [];
-
+    const tagIds = JSON.parse(params.get("tagIds") || "[]");
+    setTagIds(tagIds);
     setSearch({ orderBy, limit, offset, userId, daysAgo, tagIds });
-  }, []);
+  }, [searchParams]);
 
   useEffect(() => {
     if (!search) return;
     blogIndex(search).then((res) => setBlogs(res.data));
   }, [search]);
-
-  useEffect(() => {
-    const baseQuery = {
-      limit: 15,
-      offset: null,
-      userId: null,
-      daysAgo: 7,
-      tagIds: [],
-    };
-
-    blogIndex({ ...baseQuery, orderBy: "flarePoint" }).then((res) =>
-      setFlareRanking(res.data),
-    );
-    blogIndex({ ...baseQuery, orderBy: "corePoint" }).then((res) =>
-      setCoreRanking(res.data),
-    );
-    blogIndex({ ...baseQuery, orderBy: "createdAt" }).then((res) =>
-      setNewBlogs(res.data),
-    );
-  }, []);
 
   return (
     <div>
@@ -96,6 +74,16 @@ export default function BlogPage() {
               label: "コア度順",
               onClick: () => router.push("/blogs?orderBy=corePoint"),
             },
+            {
+              value: "wish",
+              label: "やってみたい順",
+              onClick: () => router.push("/blogs?orderBy=wish"),
+            },
+            {
+              value: "bookmark",
+              label: "ブックマーク順",
+              onClick: () => router.push("/blogs?orderBy=bookmark"),
+            }
           ]}
         />
         <TagSelect
@@ -112,6 +100,7 @@ export default function BlogPage() {
       <div className="grid gap-3">
         {blogs.map((b) => (
           <BlogSideCard
+            id={b.id}
             key={b.id}
             title={b.title}
             user={b.user}

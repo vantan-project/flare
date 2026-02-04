@@ -75,6 +75,10 @@ func Index(cc *custom.Context) error {
 		for _, tag := range blog.Tags {
 			tags = append(tags, tag.Name)
 		}
+		var userIconUrl string
+		if blog.User.Profile.Image.ID != 0 {
+			userIconUrl = blog.User.Profile.Image.URL
+		}
 		data[i] = indexResponseData{
 			Id:                blog.ID,
 			Title:             blog.Title,
@@ -82,7 +86,7 @@ func Index(cc *custom.Context) error {
 			User: User{
 				Id:          blog.UserID,
 				Name:        blog.User.Profile.Name,
-				UserIconUrl: blog.User.Profile.Image.URL,
+				UserIconUrl: userIconUrl,
 			},
 			WishesCount:    uint(blog.WishedCount),
 			BookmarksCount: uint(blog.BookmarkedCount),

@@ -6,7 +6,7 @@ import (
 )
 
 type createRequest struct {
-	Name string `json:"name" validate:"required,max=20"`
+	Name string `json:"name" validate:"required,max=20,min=1"`
 }
 
 type createResponse struct {
@@ -21,6 +21,7 @@ func Create(cc *custom.Context) error {
 		"name": {
 			"required": "タグ名は必須です。",
 			"max":      "タグ名は20文字以内で入力してください。",
+			"min":      "タグ名は1文字以上で入力してください。",
 		},
 	})
 	tag := model.Tag{

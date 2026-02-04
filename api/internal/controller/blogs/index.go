@@ -13,18 +13,17 @@ type indexReqest struct {
 	Offset  *int    `query:"offset"`
 	UserId  *uint   `query:"userId"`
 	DaysAgo *uint   `query:"daysAgo"`
-	TagIds  *[]uint `query:"tagIds"`
+	TagIds  []uint  `query:"tagIds"`
 }
 
 type indexResponseData struct {
-	Id                uint     `json:"id"`
-	Title             string   `json:"title"`
-	ThumbnailImageUrl string   `json:"thumbnailImageUrl"`
-	User              User     `json:"user"`
-	WishesCount       uint     `json:"wishesCount"`
-	BookmarksCount    uint     `json:"bookmarksCount"`
-	Tags              []string `json:"tags"`
-	UpdatedAt         string   `json:"updatedAt"`
+	Id                uint   `json:"id"`
+	Title             string `json:"title"`
+	ThumbnailImageUrl string `json:"thumbnailImageUrl,omitempty"`
+	User              User   `json:"user"`
+	WishesCount       uint   `json:"wishesCount"`
+	BookmarksCount    uint   `json:"bookmarksCount"`
+	UpdatedAt         string `json:"updatedAt"`
 }
 
 type User struct {
@@ -45,14 +44,14 @@ func Index(cc *custom.Context) error {
 	query := cc.DB.Model(&model.Blog{})
 	// ユーザーIDが存在していた場合。
 	if req.UserId != nil {
-		query = query.Where("user_id = ?", req.UserId)
+		query = query.Where("blogs.user_id = ?", req.UserId)
 	}
 	if req.DaysAgo != nil {
-		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, int(*req.DaysAgo)))
+		query = query.Where("blogs.updated_at > ?", time.Now().AddDate(0, 0, -int(*req.DaysAgo)))
 	}
 
-	if req.TagIds != nil {
-		query = query.Joins("JOIN blog_tags ON blog_tags.blog_id = blogs.id ").
+	if len(req.TagIds) > 0 {
+		query = query.Distinct().Joins("JOIN blog_tags ON blog_tags.blog_id = blogs.id").
 			Where("blog_tags.tag_id IN (?)", req.TagIds)
 	}
 
@@ -66,17 +65,16 @@ func Index(cc *custom.Context) error {
 		"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
 		"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount").
 		Preload("User.Profile.Image").
-		Preload("Tags").
 		Preload("Image")
 
 	if req.OrderBy != nil {
 		switch *req.OrderBy {
 		case "createdAt":
-			query = query.Order("created_at DESC")
+			query = query.Order("blogs.created_at DESC")
 		case "flarePoint":
-			query = query.Order("flare_point DESC")
+			query = query.Order("blogs.flare_point DESC")
 		case "corePoint":
-			query = query.Order("core_point DESC")
+			query = query.Order("blogs.core_point DESC")
 		case "wish":
 			query = query.Order("WishedCount DESC")
 		case "bookmark":
@@ -99,6 +97,10 @@ func Index(cc *custom.Context) error {
 
 	data := make([]indexResponseData, len(blogs))
 	for i, blog := range blogs {
+		var userIconUrl string
+		if blog.User.Profile.Image.ID != 0 {
+			userIconUrl = blog.User.Profile.Image.URL
+		}
 		data[i] = indexResponseData{
 			Id:                blog.ID,
 			Title:             blog.Title,
@@ -106,7 +108,7 @@ func Index(cc *custom.Context) error {
 			User: User{
 				Id:          blog.UserID,
 				Name:        blog.User.Profile.Name,
-				UserIconUrl: blog.User.Profile.Image.URL,
+				UserIconUrl: userIconUrl,
 			},
 			WishesCount:    uint(blog.WishedCount),
 			BookmarksCount: uint(blog.BookmarkedCount),

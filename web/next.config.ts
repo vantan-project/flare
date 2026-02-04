@@ -13,8 +13,8 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "s3-flare.s3.amazonaws.com",
-      },
+        hostname: "s3-flare.s3.amazonaws.com"
+      }
     ],
   },
 };
