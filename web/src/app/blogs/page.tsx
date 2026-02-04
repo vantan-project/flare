@@ -14,14 +14,7 @@ import { set } from "react-hook-form";
 
 export default function BlogPage() {
   const router = useRouter();
-  const [search, setSearch] = useState<BlogIndexRequest>({
-    orderBy: "createdAt",
-    limit: 20,
-    offset: 0,
-    userId: null,
-    daysAgo: null,
-    tagIds: [],
-  });
+  const [search, setSearch] = useState<BlogIndexRequest>();
   const [blogs, setBlogs] = useState<BlogIndexResponse>([]);
   const [tagIds, setTagIds] = useState<number[]>([]);
   const searchParams = useSearchParams();
@@ -61,9 +54,12 @@ export default function BlogPage() {
     blogIndex(search).then((res) => setBlogs(res.data));
   }, [search]);
 
+
+  if (!search) return null;
+
   return (
     <div className="px-4">
-      <div className="flex items-end justify-end pt-[9px] gap-2">
+      <div className="fixed top-12 right-4 flex items-end justify-end pt-[9px] gap-2 z-60">
         <SortSelect
           value={search?.orderBy || null}
           options={[

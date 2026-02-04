@@ -3,9 +3,11 @@ import { usePathname } from "next/navigation";
 import { Icon } from "@/components/icon/icon";
 import { cn } from "@/utils/cn";
 import Link from "next/link";
+import { useMeStore } from "@/stores/use-me-store";
 
 export function Footer() {
   const pathname = usePathname();
+  const { me } = useMeStore();
 
   return (
     <div className="bg-white flex justify-evenly items-center h-16 text-black shadow-[0_-4px_6px_-1px_var(--color-gray)]">
@@ -25,11 +27,24 @@ export function Footer() {
           </div>
         </div>
       </Link>
-      <Link href="/profile">
-        <div className={cn(pathname == "/profile" && "text-primary")}>
+      <Link href={me ? "/profile" : "/login"}>
+        <div
+          className={cn(
+            (pathname == "/profile" || pathname == "/login") && "text-primary",
+          )}
+        >
           <div className="flex flex-col items-center justify-center w-12 h-12 text-[8px]">
-            <Icon name="profile" size={32} />
-            プロフィール
+            {me ? (
+              <>
+                <Icon name="profile" size={32} />
+                プロフィール
+              </>
+            ) : (
+              <>
+                <Icon name="login" size={32} />
+                ログイン
+              </>
+            )}
           </div>
         </div>
       </Link>

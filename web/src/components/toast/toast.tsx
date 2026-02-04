@@ -87,7 +87,7 @@ export function Toast<T extends string>({
               >
                 <div
                   className={cn(
-                    "p-3 w-72 bg-base border-l-2 flex items-center gap-3 rounded-lg shadow",
+                    "p-3 w-82 bg-base border-l-2 flex items-center gap-3 rounded-lg shadow",
                     toast.type === "error" && "text-error",
                     toast.type === "success" && "text-success"
                   )}

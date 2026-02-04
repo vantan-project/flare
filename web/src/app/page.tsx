@@ -51,7 +51,7 @@ function Page() {
 
   return (
     <div>
-      <div className="flex items-end justify-end pt-[9px] mx-5 gap-2">
+      <div className="fixed top-12 right-4 flex items-end justify-end pt-[9px] mx-5 gap-2 z-50">
         <SortSelect
           value={null}
           options={[

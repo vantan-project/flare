@@ -52,7 +52,7 @@ export function TagSelect({ value, onChange, onSearch }: Props) {
   );
 
   return (
-    <div className="relative w-28 text-xs z-50">
+    <div className="relative w-28 text-xs">
       <div
         className="py-3 rounded-[20px] bg-white border border-black flex justify-center items-center gap-2 cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}

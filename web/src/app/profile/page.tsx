@@ -1,6 +1,7 @@
 "use client";
 
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
+import { Icon } from "@/components/icon/icon";
 import {
   BlogBookmarkIndexRequest,
   BlogBookmarkIndexResponse,
@@ -17,20 +18,24 @@ import {
   blogWishIndex,
 } from "@/lib/api/blogs-wish-index";
 import { useMeStore } from "@/stores/use-me-store";
+import { useToastStore } from "@/stores/use-toast-store";
+import { accessToken } from "@/utils/access-token";
 import { cn } from "@/utils/cn";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function () {
+  const router = useRouter();
   const pathname = usePathname();
-  const { me } = useMeStore();
+  const { me, setMe } = useMeStore();
+  const { addToast } = useToastStore();
   const [mode, setMode] = useState<"index" | "wish" | "bookmark" | null>(null);
 
   const [indexBlogs, setIndexBlogs] = useState<BlogIndexResponse>([]);
   const [wishedBlogs, setWishedBlogs] = useState<BlogBookmarkIndexResponse>([]);
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<BlogWishIndexResponse>(
-    []
+    [],
   );
   const blogs = {
     index: indexBlogs,
@@ -79,7 +84,7 @@ export default function () {
   useEffect(() => {
     if (!bookmarkSearch) return;
     blogBookmarkIndex(bookmarkSearch).then((res) =>
-      setBookmarkedBlogs(res.data)
+      setBookmarkedBlogs(res.data),
     );
   }, [bookmarkSearch]);
 
@@ -125,7 +130,19 @@ export default function () {
   if (!mode || !me) return null;
 
   return (
-    <div className="px-5 mt-16">
+    <div className="px-5 mt-16 relative">
+      <div
+        className="absolute -top-12 right-4 border-b text-main-hover border-main-hover flex gap-2 px-3 py-1 cursor-pointer"
+        onClick={() => {
+          setMe(null);
+          accessToken.remove();
+          addToast("success", "ログアウトしました");
+          router.push("/");
+        }}
+      >
+        <Icon name="logout" size={24} />
+        ログアウト
+      </div>
       <div className="w-full h-45.25 flex flex-col justify-between items-center">
         <div className="relative w-35 h-35 rounded-full overflow-hidden">
           <Image

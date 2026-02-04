@@ -51,14 +51,8 @@ export function BlogSideCard({
             <div className="text-[12px]">{user.name}</div>
           </div>
           <div className="flex gap-1 text-gray">
-            <WishButton
-              id={id}
-              wishedCount={wishedCount}
-            />
-            <BookmarkButton
-              id={id}
-              bookmarkedCount={bookmarkedCount}
-            />
+            <WishButton id={id} wishedCount={wishedCount} />
+            <BookmarkButton id={id} bookmarkedCount={bookmarkedCount} />
           </div>
         </div>
       </div>

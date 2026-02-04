@@ -9,11 +9,13 @@ import { H2 } from "./svgs/h2";
 import { h3 } from "./svgs/h3";
 import { Home } from "./svgs/home";
 import { Image } from "./svgs/image";
+import { Logout } from "./svgs/logout";
 import { Person } from "./svgs/person";
 import { Profile } from "./svgs/profile";
 import { Sort } from "./svgs/sort";
 import { Success } from "./svgs/success";
 import { Toggle } from "./svgs/toggle";
+import { Login } from "./svgs/login";
 
 const icons = {
   flare: Flare,
@@ -32,6 +34,8 @@ const icons = {
   h1: H1,
   h2: H2,
   h3: h3,
+  logout: Logout,
+  login: Login,
 } as const;
 
 export type IconProps = {
