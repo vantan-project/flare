@@ -1,4 +1,4 @@
-package bookmark
+package blogs
 
 import (
 	"time"
@@ -7,9 +7,14 @@ import (
 	"github.com/vantan-project/flare/internal/model"
 )
 
-type indexReqest struct {
-	Limit   *int    `query:"limit"`
-	Offset  *int    `query:"offset"`
+type bookmarkIndexRequest struct {
+	Limit  *int `query:"limit" validate:"omitempty,min=1,max=20"`
+	Offset *int `query:"offset" validate:"omitempty,min=0"`
+}
+
+type bookmarkIndexResponse struct {
+	Data  []indexResponseData `json:"data"`
+	Total uint                `json:"total"`
 }
 
 type indexResponseData struct {
@@ -29,27 +34,21 @@ type User struct {
 	UserIconUrl string `json:"userIconUrl,omitempty"`
 }
 
-type indexResponse struct {
-	Data  []indexResponseData `json:"data"`
-	Total uint                `json:"total"`
-}
-
 func Index(cc *custom.Context) error {
-	var req indexReqest
+	var req bookmarkIndexRequest
 	cc.BindValidate(&req, nil)
 
-	query := cc.DB.
-    Table("blogs AS b").
-    Joins(`
-        JOIN bookmarks AS bj
-          ON bj.blog_id = b.id
-          AND bj.deleted_at IS NULL
-    `).
-    Where("bj.user_id = ?", cc.AuthID)
+	query := cc.DB.Model(&model.Blog{}).
+		Joins("INNER JOIN bookmarks ON bookmarks.blog_id = blogs.id").
+		Where("bookmarks.user_id = ?", cc.AuthID).
+		Where("bookmarks.deleted_at IS NULL").
+		Where("blogs.deleted_at IS NULL")
+
 	if req.Limit != nil {
 		query = query.Limit(*req.Limit)
 	}
-	if req.Offset != nil {
+
+	if req.Offset != nil && req.Limit != nil {
 		query = query.Offset(*req.Offset)
 	}
 
@@ -58,30 +57,12 @@ func Index(cc *custom.Context) error {
 		return cc.JSON(500, nil)
 	}
 
-		// リレーション
-		query = query.Select(`
-				b.id,
-				b.title,
-				b.user_id,
-				b.thumbnail_image_id,
-				b.updated_at,
-				(
-						SELECT COUNT(*)
-						FROM wishes w2
-						WHERE w2.blog_id = b.id
-							AND w2.deleted_at IS NULL
-				) AS wished_count,
-				(
-						SELECT COUNT(*)
-						FROM bookmarks bm2
-						WHERE bm2.blog_id = b.id
-							AND bm2.deleted_at IS NULL
-				) AS bookmarked_count
-		`).
+	query = query.Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at," +
+		"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
+		"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount").
 		Preload("User.Profile.Image").
 		Preload("Tags").
-		Preload("Image").
-		Order("bj.created_at DESC")
+		Preload("Image")
 
 	var blogs []model.Blog
 	if err := query.Find(&blogs).Error; err != nil {
@@ -90,6 +71,10 @@ func Index(cc *custom.Context) error {
 
 	data := make([]indexResponseData, len(blogs))
 	for i, blog := range blogs {
+		var tags []string
+		for _, tag := range blog.Tags {
+			tags = append(tags, tag.Name)
+		}
 		data[i] = indexResponseData{
 			Id:                blog.ID,
 			Title:             blog.Title,
@@ -101,11 +86,12 @@ func Index(cc *custom.Context) error {
 			},
 			WishesCount:    uint(blog.WishedCount),
 			BookmarksCount: uint(blog.BookmarkedCount),
+			Tags:           tags,
 			UpdatedAt:      blog.UpdatedAt.Format(time.DateTime),
 		}
 	}
 
-	return cc.JSON(200, indexResponse{
+	return cc.JSON(200, bookmarkIndexResponse{
 		Data:  data,
 		Total: uint(total),
 	})
