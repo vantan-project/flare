@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
 import { SortSelect } from "@/components/sort-select/sort-select";
 import { TagSelect } from "@/components/tag-select/tag-select";
@@ -77,59 +78,68 @@ export default function BlogPage() {
 
   return (
     <div>
-      <div className="flex items-end justify-end pt-[9px] mx-5 gap-2">
-        <SortSelect
-          value={null}
-          options={[
-            {
-              value: "createdAt",
-              label: "最新順",
-              onClick: () => router.push("/blogs?orderBy=createdAt"),
-            },
-            {
-              value: "flarePoint",
-              label: "熱意度順",
-              onClick: () => router.push("/blogs?orderBy=flarePoint"),
-            },
-            {
-              value: "corePoint",
-              label: "コア度順",
-              onClick: () => router.push("/blogs?orderBy=corePoint"),
-            },
-            {
-              value: "wish",
-              label: "やってみたい順",
-              onClick: () => router.push("/blogs?orderBy=wish"),
-            },
-            {
-              value: "bookmark",
-              label: "ブックマーク順",
-              onClick: () => router.push("/blogs?orderBy=bookmark"),
-            },
-          ]}
-        />
-        <TagSelect
-          value={tagIds}
-          onChange={(v) => setTagIds(v)}
-          onSearch={() =>
-            router.push(
-              `/blogs?tagIds=${encodeURIComponent(JSON.stringify(tagIds))}`,
-            )
-          }
-        />
-      </div>
-      <div className="pt-2 pb-3">投稿一覧</div>
-      <div className="grid gap-3">
-        {blogs.map((b) => (
-          <BlogSideCard
-            key={b.id}
-            title={b.title}
-            user={b.user}
-            wishedCount={b.wishesCount}
-            bookmarkedCount={b.bookmarksCount}
-            thumbnailImageUrl={b.thumbnailImageUrl}
-          />
-        ))}
+      <div className="pt-[62px]" />
+      <div className="px-5">
+        <div className="flex items-end justify-between pt-[9px] gap-2 pb-5">
+          <div className="flex justify-start items-center gap-[3px]">
+            <Image src="/Frame174.png" alt="" width={25} height={40} />
+            <span className="font-medium">Flare</span>
+          </div>
+          <div className="flex justify-end items-center gap-2">
+            <SortSelect
+              value={null}
+              options={[
+                {
+                  value: "createdAt",
+                  label: "最新順",
+                  onClick: () => router.push("/blogs?orderBy=createdAt"),
+                },
+                {
+                  value: "flarePoint",
+                  label: "熱意度順",
+                  onClick: () => router.push("/blogs?orderBy=flarePoint"),
+                },
+                {
+                  value: "corePoint",
+                  label: "コア度順",
+                  onClick: () => router.push("/blogs?orderBy=corePoint"),
+                },
+                {
+                  value: "wish",
+                  label: "やってみたい順",
+                  onClick: () => router.push("/blogs?orderBy=wish"),
+                },
+                {
+                  value: "bookmark",
+                  label: "ブックマーク順",
+                  onClick: () => router.push("/blogs?orderBy=bookmark"),
+                },
+              ]}
+            />
+            <TagSelect
+              value={tagIds}
+              onChange={(v) => setTagIds(v)}
+              onSearch={() =>
+                router.push(
+                  `/blogs?tagIds=${encodeURIComponent(JSON.stringify(tagIds))}`,
+                )
+              }
+            />
+          </div>
+        </div>
+        <div className="pt-2 pb-3">投稿一覧</div>
+        <div className="grid gap-3">
+          {blogs.map((b) => (
+            <BlogSideCard
+              key={b.id}
+              title={b.title}
+              user={b.user}
+              wishedCount={b.wishesCount}
+              bookmarkedCount={b.bookmarksCount}
+              thumbnailImageUrl={b.thumbnailImageUrl}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

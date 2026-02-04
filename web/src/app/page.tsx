@@ -1,6 +1,7 @@
 "use client";
 
 import { blogIndex, BlogIndexResponse } from "@/lib/api/blog-index";
+import Image from "next/image";
 import { SortSelect } from "@/components/sort-select/sort-select";
 import { TagSelect } from "@/components/tag-select/tag-select";
 import { useState, useEffect } from "react";
@@ -51,47 +52,53 @@ function Page() {
 
   return (
     <div>
-      <div className="flex items-end justify-end pt-[9px] mx-5 gap-2">
-        <SortSelect
-          value={null}
-          options={[
-            {
-              value: "createdAt",
-              label: "最新順",
-              onClick: () => router.push("/blogs?orderBy=createdAt"),
-            },
-            {
-              value: "flarePoint",
-              label: "熱意度順",
-              onClick: () => router.push("/blogs?orderBy=flarePoint"),
-            },
-            {
-              value: "corePoint",
-              label: "コア度順",
-              onClick: () => router.push("/blogs?orderBy=corePoint"),
-            },
-            {
-              value: "wish",
-              label: "やってみたい順",
-              onClick: () => router.push("/blogs?orderBy=wish"),
-            },
-            {
-              value: "bookmark",
-              label: "ブックマーク順",
-              onClick: () => router.push("/blogs?orderBy=bookmark"),
-            },
-          ]}
-        />
-
-        <TagSelect
-          value={tagIds}
-          onChange={(v) => setTagIds(v)}
-          onSearch={() =>
-            router.push(
-              `/blogs?tagIds=${encodeURIComponent(JSON.stringify(tagIds))}`,
-            )
-          }
-        />
+      <div className="pt-[62px]" />
+      <div className="flex pt-[9px] mx-5 gap-2 items-center justify-between">
+        <div className="flex justify-start items-center gap-[3px]">
+          <Image src="/Frame174.png" alt="" width={25} height={40} />
+          <span className="font-medium">Flare</span>
+        </div>
+        <div className="flex justify-end items-center gap-2">
+          <SortSelect
+            value={null}
+            options={[
+              {
+                value: "createdAt",
+                label: "最新順",
+                onClick: () => router.push("/blogs?orderBy=createdAt"),
+              },
+              {
+                value: "flarePoint",
+                label: "熱意度順",
+                onClick: () => router.push("/blogs?orderBy=flarePoint"),
+              },
+              {
+                value: "corePoint",
+                label: "コア度順",
+                onClick: () => router.push("/blogs?orderBy=corePoint"),
+              },
+              {
+                value: "wish",
+                label: "やってみたい順",
+                onClick: () => router.push("/blogs?orderBy=wish"),
+              },
+              {
+                value: "bookmark",
+                label: "ブックマーク順",
+                onClick: () => router.push("/blogs?orderBy=bookmark"),
+              },
+            ]}
+          />
+          <TagSelect
+            value={tagIds}
+            onChange={(v) => setTagIds(v)}
+            onSearch={() =>
+              router.push(
+                `/blogs?tagIds=${encodeURIComponent(JSON.stringify(tagIds))}`,
+              )
+            }
+          />
+        </div>
       </div>
 
       <div className="p-5">
