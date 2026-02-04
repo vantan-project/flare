@@ -73,12 +73,12 @@ function Page() {
             {
               value: "wish",
               label: "やってみたい順",
-              onClick: () => router.push("/blogs?orderBy=corePoint"),
+              onClick: () => router.push("/blogs?orderBy=wish"),
             },
             {
               value: "bookmark",
-              label: "Bookmark順",
-              onClick: () => router.push("/blogs?orderBy=corePoint"),
+              label: "ブックマーク順",
+              onClick: () => router.push("/blogs?orderBy=bookmark"),
             },
           ]}
         />
