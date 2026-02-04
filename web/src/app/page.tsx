@@ -2,12 +2,10 @@
 
 import { blogIndex, BlogIndexResponse } from "@/lib/api/blog-index";
 import { SortSelect } from "@/components/sort-select/sort-select";
-import { TagSelect } from "@/components/tag-select/tag-select";
 import { useState, useEffect } from "react";
 import { BlogCard } from "@/components/blog-card/blog-card";
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
 import Link from "next/link";
-import { cacheTag } from "next/cache";
 
 function Page() {
   const [flareBlogs, setFlareRanking] = useState<BlogIndexResponse>([]);
