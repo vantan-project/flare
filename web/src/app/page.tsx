@@ -2,12 +2,15 @@
 
 import { blogIndex, BlogIndexResponse } from "@/lib/api/blog-index";
 import { SortSelect } from "@/components/sort-select/sort-select";
+import { TagSelect } from "@/components/tag-select/tag-select";
 import { useState, useEffect } from "react";
 import { BlogCard } from "@/components/blog-card/blog-card";
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function Page() {
+  const router = useRouter();
   const [flareBlogs, setFlareRanking] = useState<BlogIndexResponse>([]);
   const [coreBlogs, setCoreRanking] = useState<BlogIndexResponse>([]);
   const [newBlogs, setNewBlogs] = useState<BlogIndexResponse>([]);
@@ -44,7 +47,39 @@ function Page() {
 
   return (
     <div>
-      <SortSelect value={null} options={[]} />
+      <div className="flex items-end justify-end pt-[9px] mx-5 gap-2">
+        <SortSelect
+          value={null}
+          options={[
+            {
+              value: "createdAt",
+              label: "最新順",
+              onClick: () => router.push("/blogs?orderBy=createdAt"),
+            },
+            {
+              value: "flarePoint",
+              label: "熱意度順",
+              onClick: () => router.push("/blogs?orderBy=flarePoint"),
+            },
+            {
+              value: "corePoint",
+              label: "コア度順",
+              onClick: () => router.push("/blogs?orderBy=corePoint"),
+            },
+          ]}
+        />
+
+        <TagSelect
+          value={[]}
+          onChange={[
+            {
+              tags: "",
+              onChange: () => router.push("/blogs?"),
+              onSearch: () => router.push("/blogs?"),
+            },
+          ]}
+        />
+      </div>
 
       <div className="p-5">
         <div className="font-medium border-b-2 border-primary p-2 mb-3">
