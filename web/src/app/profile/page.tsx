@@ -1,9 +1,22 @@
 "use client";
 
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
-import { BlogBookmarkIndexResponse } from "@/lib/api/blog-bookmark-index";
-import { BlogIndexResponse } from "@/lib/api/blog-index";
-import { BlogWishIndexResponse } from "@/lib/api/blogs-wish-index";
+import {
+  BlogBookmarkIndexRequest,
+  BlogBookmarkIndexResponse,
+  blogBookmarkIndex,
+} from "@/lib/api/blog-bookmark-index";
+import {
+  BlogIndexRequest,
+  BlogIndexResponse,
+  blogIndex,
+} from "@/lib/api/blog-index";
+import {
+  BlogWishIndexRequest,
+  BlogWishIndexResponse,
+  blogWishIndex,
+} from "@/lib/api/blogs-wish-index";
+import { useMeStore } from "@/stores/use-me-store";
 import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -11,38 +24,63 @@ import { useEffect, useState } from "react";
 
 export default function () {
   const pathname = usePathname();
+  const { me } = useMeStore();
   const [mode, setMode] = useState<"index" | "wish" | "bookmark" | null>(null);
-  const dammyBlogs = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    title: `タイトル${i + 1}`,
-    thumbnailImageUrl: "https://placehold.jp/300x200.png",
-    user: {
-      id: i,
-      name: "テストユーザー",
-      iconImageUrl: "https://placehold.jp/200x200.png",
-    },
-    wishesCount: 23,
-    bookmarksCount: 23,
-    tags: [
-      { id: 1, name: "タグ" },
-      { id: 2, name: "タグ" },
-      { id: 3, name: "タグ" },
-    ],
-    updateAt: "60分前",
-  }));
-  const me = {
-    id: 1,
-    name: "山田 太郎",
-    email: "taro@example.com",
-    iconImageUrl: "https://placehold.jp/300x200.png",
-    wishesCount: [1, 2, 3],
-    bookmarksCount: [10, 20],
+
+  const [indexBlogs, setIndexBlogs] = useState<BlogIndexResponse>([]);
+  const [wishedBlogs, setWishedBlogs] = useState<BlogBookmarkIndexResponse>([]);
+  const [bookmarkedBlogs, setBookmarkedBlogs] = useState<BlogWishIndexResponse>(
+    []
+  );
+  const blogs = {
+    index: indexBlogs,
+    wish: wishedBlogs,
+    bookmark: bookmarkedBlogs,
   };
-  const [indexBlogs, setIndexBlogs] = useState<BlogIndexResponse>(dammyBlogs);
-  const [wishedBlogs, setWishedBlogs] =
-    useState<BlogBookmarkIndexResponse>(dammyBlogs);
-  const [bookmarkedBlogs, setBookmarkedBlogs] =
-    useState<BlogWishIndexResponse>(dammyBlogs);
+
+  const [indexSearch, setIndexSearch] = useState<BlogIndexRequest>();
+  const [wishSearch, setWishSearch] = useState<BlogWishIndexRequest>();
+  const [bookmarkSearch, setBookmarkSearch] =
+    useState<BlogBookmarkIndexRequest>();
+
+  useEffect(() => {
+    if (!me) return;
+    const orderBy: BlogIndexRequest["orderBy"] = "createdAt";
+    const req = {
+      orderBy,
+      limit: 20,
+      offset: 0,
+      daysAgo: 7,
+      userId: me.id,
+    };
+
+    setIndexSearch(req);
+    setWishSearch({
+      limit: req.limit,
+      offset: req.offset,
+    });
+    setBookmarkSearch({
+      limit: req.limit,
+      offset: req.offset,
+    });
+  }, [me]);
+
+  useEffect(() => {
+    if (!indexSearch) return;
+    blogIndex(indexSearch).then((res) => setIndexBlogs(res.data));
+  }, [indexSearch]);
+
+  useEffect(() => {
+    if (!wishSearch) return;
+    blogWishIndex(wishSearch).then((res) => setWishedBlogs(res.data));
+  }, [wishSearch]);
+
+  useEffect(() => {
+    if (!bookmarkSearch) return;
+    blogBookmarkIndex(bookmarkSearch).then((res) =>
+      setBookmarkedBlogs(res.data)
+    );
+  }, [bookmarkSearch]);
 
   const changeMode = (mode: "index" | "wish" | "bookmark") => {
     const params = new URLSearchParams(window.location.search);
@@ -65,12 +103,6 @@ export default function () {
     window.dispatchEvent(new PopStateEvent("popstate"));
   };
 
-  const blogs = {
-    index: indexBlogs,
-    wish: wishedBlogs,
-    bookmark: bookmarkedBlogs,
-  };
-
   useEffect(() => {
     const updateModeFromURL = () => {
       const params = new URLSearchParams(window.location.search);
@@ -89,7 +121,7 @@ export default function () {
     };
   }, [pathname]);
 
-  if (!mode) return null;
+  if (!mode || !me) return null;
 
   return (
     <div className="px-5 mt-16">
@@ -97,7 +129,7 @@ export default function () {
         <div className="relative w-35 h-35 rounded-full overflow-hidden">
           <Image
             alt={me.name}
-            src={me.iconImageUrl}
+            src={me.iconImageUrl || "/default-aveter.svg"}
             fill
             className="object-cover"
           />
