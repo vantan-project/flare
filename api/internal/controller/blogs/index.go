@@ -13,6 +13,7 @@ type indexReqest struct {
 	Offset  *int    `query:"offset"`
 	UserId  *uint   `query:"userId"`
 	DaysAgo *uint   `query:"daysAgo"`
+	TagIds  *[]uint `query:"tagIds"`
 }
 
 type indexResponseData struct {
@@ -49,19 +50,19 @@ func Index(cc *custom.Context) error {
 	if req.DaysAgo != nil {
 		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, int(*req.DaysAgo)))
 	}
-	if req.Limit != nil {
-		query = query.Limit(*req.Limit)
-	}
-	if req.Offset != nil {
-		query = query.Offset(*req.Offset)
+
+	if req.TagIds != nil {
+		query = query.Joins("JOIN blog_tags ON blog_tags.blog_id = blogs.id ").
+			Where("blog_tags.tag_id IN (?)", req.TagIds)
 	}
 
 	var total int64
 	if err := query.Count(&total).Error; err != nil {
 		return cc.JSON(500, nil)
 	}
+
 	// リレーション
-	query = query.Select("id,title,user_id,thumbnail_image_id,updated_at," +
+	query = query.Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at," +
 		"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
 		"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount").
 		Preload("User.Profile.Image").
@@ -81,6 +82,14 @@ func Index(cc *custom.Context) error {
 		case "bookmark":
 			query = query.Order("BookmarkedCount DESC")
 		}
+	}
+
+	if req.Limit != nil {
+		query = query.Limit(*req.Limit)
+	}
+	// offsetはlimitと一緒じゃないとダメみたい。
+	if req.Offset != nil && req.Limit != nil {
+		query = query.Offset(*req.Offset)
 	}
 
 	var blogs []model.Blog
