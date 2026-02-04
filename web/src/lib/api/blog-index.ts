@@ -27,7 +27,7 @@ export type BlogIndexResponse = {
 export function blogIndex(
   req: BlogIndexRequest
 ): Promise<QueryResponse<BlogIndexResponse, { total: number }>> {
-  // return fetchApi("GET", "/blogs");
+  return fetchApi("GET", "/blogs");
   // TODO: reqを渡すとエラーになってしまう
-  return fetchApi("GET", "/blogs", req);
+  // return fetchApi("GET", "/blogs", req);
 }

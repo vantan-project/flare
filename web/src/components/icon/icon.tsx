@@ -25,9 +25,10 @@ const icons = {
 export type IconProps = {
   size: number;
   name: keyof typeof icons;
+  className?: string
 };
 
-export function Icon({ size, name }: IconProps) {
+export function Icon({ size, name, className }: IconProps) {
   const IconComponent = icons[name];
   return (
     <div
@@ -35,6 +36,7 @@ export function Icon({ size, name }: IconProps) {
         width: size,
         height: size,
       }}
+      className={className}
     >
       <IconComponent />
     </div>

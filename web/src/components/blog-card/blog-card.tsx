@@ -1,7 +1,10 @@
+"use client";
 import { Icon } from "@/components/icon/icon";
+import { useMeStore } from "@/stores/use-me-store";
 import Image from "next/image";
 
 export type BlogCordProps = {
+  id: number;
   title: string;
   user: {
     name: string;
@@ -13,12 +16,17 @@ export type BlogCordProps = {
 };
 
 export function BlogCard({
+  id,
   title,
   user,
   wishedCount,
   bookmarkedCount,
   thumbnailImageUrl,
 }: BlogCordProps) {
+  const { me } = useMeStore();
+  const isBookmarked = me?.bookmarkedIds.includes(id);
+  const isWished = me?.wishedIds.includes(id);
+
   return (
     <div className="w-60">
       <div className="relative w-60 h-35 overflow-hidden rounded-[10px]">
@@ -45,11 +53,11 @@ export function BlogCard({
         </div>
         <div className="flex gap-1 text-gray">
           <div className="flex items-center gap-0.5">
-            <Icon size={20} name="flare" />
+            <Icon size={20} name="flare" className={isBookmarked ? "text-primary" : undefined} />
             <p className="text-black">{bookmarkedCount}</p>
           </div>
           <div className="flex items-center gap-0.5">
-            <Icon size={20} name="book" />
+            <Icon size={20} name="book" className={isWished ? "text-primary" : undefined} />
             <p className="text-black">{wishedCount}</p>
           </div>
         </div>
