@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@/components/input/input";
+import Image from "next/image";
 import { authLogin, AuthLoginRequest } from "@/lib/api/auth-login";
 import { authMe } from "@/lib/api/auth-me";
 import { useErrorStore } from "@/stores/use-error-store";
@@ -44,41 +45,54 @@ function Page() {
   };
 
   return (
-    <form className="px-5 flex flex-col">
-      <div className="text-[24px] font-medium mb-15 text-center">ログイン</div>
-      <div className="flex flex-col gap-4">
-        <Input
-          label="メールアドレス"
-          placeholder="example@mail.com"
-          type="text"
-          {...register("email")}
-        />
-        <Input
-          label="パスワード"
-          placeholder="パスワードを入力"
-          type="password"
-          {...register("password")}
+    <div>
+      <div className="flex items-center justify-center">
+        <Image
+          src="/Frame174.png"
+          alt=""
+          width={91}
+          height={146}
+          className="py-10"
         />
       </div>
+      <form className="px-5 flex flex-col">
+        <div className="text-[24px] font-medium mb-15 text-center">
+          ログイン
+        </div>
+        <div className="flex flex-col gap-4">
+          <Input
+            label="メールアドレス"
+            placeholder="example@mail.com"
+            type="text"
+            {...register("email")}
+          />
+          <Input
+            label="パスワード"
+            placeholder="パスワードを入力"
+            type="password"
+            {...register("password")}
+          />
+        </div>
 
-      <button className="block text-[14px] w-full text-right cursor-pointer">
-        パスワードを忘れた方はこちら
-      </button>
+        <button className="block text-[14px] w-full text-right cursor-pointer">
+          パスワードを忘れた方はこちら
+        </button>
 
-      <button
-        className="block w-full text-white p-4 font-medium bg-primary hover:bg-primary-hover rounded-[20px] text-[16px] mt-15 cursor-pointer"
-        type="button"
-        onClick={handleSubmit(onSubmit)}
-      >
-        ログイン
-      </button>
-      <Link
-        href="/register"
-        className="text-[14px] mt-3.75 cursor-pointer mx-auto"
-      >
-        新規登録も方はこちら
-      </Link>
-    </form>
+        <button
+          className="block w-full text-white p-4 font-medium bg-primary hover:bg-primary-hover rounded-[20px] text-[16px] mt-15 cursor-pointer"
+          type="button"
+          onClick={handleSubmit(onSubmit)}
+        >
+          ログイン
+        </button>
+        <Link
+          href="/register"
+          className="text-[14px] mt-3.75 cursor-pointer mx-auto"
+        >
+          新規登録も方はこちら
+        </Link>
+      </form>
+    </div>
   );
 }
 
