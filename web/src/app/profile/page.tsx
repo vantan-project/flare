@@ -52,6 +52,7 @@ export default function () {
       offset: 0,
       daysAgo: null,
       userId: me.id,
+      tagIds: [],
     };
 
     setIndexSearch(req);
@@ -162,7 +163,7 @@ export default function () {
         {blogs[mode].map((blog) => (
           <BlogSideCard
             key={blog.id}
-            title={`${blog.title}${mode}`}
+            title={blog.title}
             user={blog.user}
             thumbnailImageUrl={blog.thumbnailImageUrl}
             wishedCount={23}

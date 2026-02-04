@@ -16,7 +16,15 @@ export function fetchApi(method: apiMethod, path: string, req?: any) {
 
   if (method === "GET" || method === "DELETE") {
     options.body = undefined;
-    const query = new URLSearchParams(req as Record<string, any>).toString();
+    // null/undefined/空配列を除外
+    const filteredReq = Object.entries(req || {}).reduce((acc, [key, value]) => {
+      if (value !== null && value !== undefined && !(Array.isArray(value) && value.length === 0)) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, any>);
+
+    const query = new URLSearchParams(filteredReq).toString();
     if (query) url += `?${query}`;
   }
 

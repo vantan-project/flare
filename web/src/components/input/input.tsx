@@ -16,14 +16,14 @@ export type InputProps = {
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, icon, name, type = "text", placeholder, value, onChange }, ref) => {
-    const { error } = useErrorStore(name);
+    const { error, setError } = useErrorStore(name);
     return (
       <label className="block">
         {label && <p className="pl-2 mb-2 font-medium">{label}</p>}
         <div
           className={cn(
             "flex gap-2 p-4 border rounded-2xl focus-within:border-primary",
-            error && "bg-error/20 border-error"
+            error && "bg-error/20 border-error",
           )}
         >
           <input
@@ -31,7 +31,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             className="w-full outline-none [&::-webkit-inner-spin-button]:[-webkit-appearance:none] autofill:bg-transparent bg-clip-text"
             name={name}
             value={value}
-            onChange={onChange}
+            onChange={(e) => {
+              if (name && error) setError(name, "");
+              onChange?.(e);
+            }}
             type={type}
             placeholder={placeholder}
           />
@@ -40,12 +43,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <p
           className={cn(
             "h-lh text-error text-xs leading-none ml-2 mt-1",
-            !error && "opacity-0"
+            !error && "opacity-0",
           )}
         >
           {error}
         </p>
       </label>
     );
-  }
+  },
 );

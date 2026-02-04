@@ -21,7 +21,7 @@ export function MainLayout({ children }: Props) {
       <Toast placement="top-center" />
       {children}
       <div className="h-20" />
-      <div className="fixed bottom-0 inset-x-0">
+      <div className="fixed bottom-0 inset-x-0 z-9999">
         <Footer />
       </div>
     </>

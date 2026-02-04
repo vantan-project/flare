@@ -1,0 +1,247 @@
+/* tiptap.css - 汎用的なスタイル */
+
+/* エディタコンテナ */
+.tiptap-editor {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* エディタ本体 */
+.tiptap {
+  padding: 1rem;
+  min-height: 200px;
+  outline: none;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1a202c;
+}
+
+/* プレースホルダー */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #a0aec0;
+  pointer-events: none;
+  height: 0;
+}
+
+/* 見出し */
+.tiptap h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 1.5rem 0 1rem;
+  line-height: 1.2;
+}
+
+.tiptap h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 1.25rem 0 0.75rem;
+  line-height: 1.3;
+}
+
+.tiptap h3 {
+  font-size: 1.25em;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem;
+  line-height: 1.4;
+}
+
+/* リスト */
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.5rem;
+  margin: 0.75rem 0;
+}
+
+.tiptap ul {
+  list-style-type: disc;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+}
+
+.tiptap li {
+  margin: 0.25rem 0;
+}
+
+.tiptap li p {
+  margin: 0;
+}
+
+/* ネストされたリスト */
+.tiptap ul ul,
+.tiptap ol ul {
+  list-style-type: circle;
+}
+
+.tiptap ul ul ul,
+.tiptap ol ul ul,
+.tiptap ol ol ul {
+  list-style-type: square;
+}
+
+/* コードブロック */
+.tiptap pre {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.tiptap code {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9em;
+}
+
+.tiptap pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* 引用 */
+.tiptap blockquote {
+  border-left: 4px solid #4299e1;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #4a5568;
+  font-style: italic;
+}
+
+/* 水平線 */
+.tiptap hr {
+  border: none;
+  border-top: 2px solid #e2e8f0;
+  margin: 2rem 0;
+}
+
+/* テキスト装飾 */
+.tiptap strong {
+  font-weight: bold;
+}
+
+.tiptap em {
+  font-style: italic;
+}
+
+.tiptap u {
+  text-decoration: underline;
+}
+
+.tiptap s {
+  text-decoration: line-through;
+}
+
+/* リンク */
+.tiptap a {
+  color: #4299e1;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tiptap a:hover {
+  color: #2b6cb0;
+}
+
+/* 画像 */
+.tiptap .node-image {
+  display: inline !important;
+  width: fit-content !important;
+}
+
+.tiptap img {
+  display: inline !important;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* テーブル */
+.tiptap table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.tiptap th,
+.tiptap td {
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.tiptap th {
+  background: #f7fafc;
+  font-weight: bold;
+}
+
+.tiptap tr:hover {
+  background: #f7fafc;
+}
+
+/* 選択時のハイライト */
+.tiptap ::selection {
+  background: #bee3f8;
+}
+
+/* フォーカス時 */
+.tiptap:focus {
+  outline: none;
+}
+
+/* タスクリスト（拡張機能使用時） */
+.tiptap ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+
+.tiptap ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+}
+
+.tiptap ul[data-type="taskList"] li input[type="checkbox"] {
+  margin-right: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+/* コラボレーションカーソル（拡張機能使用時） */
+.collaboration-cursor__caret {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 1px solid #0d0d0d;
+  border-right: 1px solid #0d0d0d;
+  word-break: normal;
+  pointer-events: none;
+}
+
+.collaboration-cursor__label {
+  position: absolute;
+  top: -1.4em;
+  left: -1px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  user-select: none;
+  color: #fff;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px 3px 3px 0;
+  white-space: nowrap;
+}

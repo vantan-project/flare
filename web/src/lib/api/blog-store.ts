@@ -1,7 +1,7 @@
 import { fetchApi } from "@/utils/fetch-api";
 import { MutationResponse } from "../mutation-response";
 
-export type BlogStoreRespnse = {
+export type BlogStoreRequest = {
   title: string;
   content: string;
   tagIds: number[];
@@ -9,7 +9,7 @@ export type BlogStoreRespnse = {
 };
 
 export function blogStore(
-  req: BlogStoreRespnse,
+  req: BlogStoreRequest,
 ): Promise<MutationResponse<{ blogId: string }>> {
   return fetchApi("POST", "/blogs", req);
 }

@@ -4,10 +4,18 @@ import { QueryResponse } from "../query-response";
 export type BlogShowResponse = {
   title: string;
   thumbnailImageUrl: string;
-  userId: number[];
+  user: {
+    id: number;
+    name: string;
+    userIconUrl: string | null;
+  };
   wishesCount: number;
-  tags: string[];
-  updateAt: string;
+  tags: {
+    id: number;
+    name: string;
+  }[];
+  updatedAt: string;
+  content: string;
 };
 
 export function blogShow(id: number): Promise<QueryResponse<BlogShowResponse>> {
