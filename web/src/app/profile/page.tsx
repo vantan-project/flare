@@ -50,7 +50,7 @@ export default function () {
       orderBy,
       limit: 20,
       offset: 0,
-      daysAgo: 7,
+      daysAgo: null,
       userId: me.id,
     };
 

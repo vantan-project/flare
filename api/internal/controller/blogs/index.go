@@ -49,7 +49,6 @@ func Index(cc *custom.Context) error {
 	if req.DaysAgo != nil {
 		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, int(*req.DaysAgo)))
 	}
-
 	if req.Limit != nil {
 		query = query.Limit(*req.Limit)
 	}
