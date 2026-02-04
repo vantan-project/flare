@@ -14,6 +14,7 @@ function Page() {
   const [flareBlogs, setFlareRanking] = useState<BlogIndexResponse>([]);
   const [coreBlogs, setCoreRanking] = useState<BlogIndexResponse>([]);
   const [newBlogs, setNewBlogs] = useState<BlogIndexResponse>([]);
+  const [tagIds, setTagIds] = useState<number[]>([]);
 
   try {
     useEffect(() => {
@@ -23,6 +24,7 @@ function Page() {
         offset: null,
         userId: null,
         daysAgo: 7,
+        tagIds: [],
       }).then((res) => setFlareRanking(res.data));
 
       blogIndex({
@@ -31,6 +33,7 @@ function Page() {
         offset: null,
         userId: null,
         daysAgo: 7,
+        tagIds: [],
       }).then((res) => setCoreRanking(res.data));
 
       blogIndex({
@@ -39,6 +42,7 @@ function Page() {
         offset: null,
         userId: null,
         daysAgo: 7,
+        tagIds: [],
       }).then((res) => setNewBlogs(res.data));
     }, []);
   } catch (error) {
@@ -70,14 +74,13 @@ function Page() {
         />
 
         <TagSelect
-          value={[]}
-          onChange={[
-            {
-              tags: "",
-              onChange: () => router.push("/blogs?"),
-              onSearch: () => router.push("/blogs?"),
-            },
-          ]}
+          value={tagIds}
+          onChange={(v) => setTagIds(v)}
+          onSearch={() =>
+            router.push(
+              `/blogs?tagIds=${encodeURIComponent(JSON.stringify(tagIds))}`,
+            )
+          }
         />
       </div>
 
