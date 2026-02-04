@@ -61,11 +61,11 @@ func Index(cc *custom.Context) error {
 	}
 
 	// リレーション
-	query = query.Preload("User.Profile.Image").
-		Preload("Image").
-		Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at," +
-			"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
-			"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount")
+	query = query.Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at," +
+		"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
+		"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount").
+		Preload("User.Profile.Image").
+		Preload("Image")
 
 	if req.OrderBy != nil {
 		switch *req.OrderBy {
@@ -98,7 +98,7 @@ func Index(cc *custom.Context) error {
 	data := make([]indexResponseData, len(blogs))
 	for i, blog := range blogs {
 		var userIconUrl string
-		if blog.User.Profile.Image != nil {
+		if blog.User.Profile.Image.ID != 0 {
 			userIconUrl = blog.User.Profile.Image.URL
 		}
 		data[i] = indexResponseData{

@@ -75,7 +75,7 @@ func Index(cc *custom.Context) error {
 			tags = append(tags, tag.Name)
 		}
 		var userIconUrl string
-		if blog.User.Profile.Image != nil {
+		if blog.User.Profile.Image.ID != 0 {
 			userIconUrl = blog.User.Profile.Image.URL
 		}
 		data[i] = indexResponseData{

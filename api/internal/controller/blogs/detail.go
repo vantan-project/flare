@@ -58,7 +58,7 @@ func Detail(cc *custom.Context) error {
 	}
 
 	var userIconUrl string
-	if blog.User.Profile.Image != nil {
+	if blog.User.Profile.Image.ID != 0 {
 		userIconUrl = blog.User.Profile.Image.URL
 	}
 
