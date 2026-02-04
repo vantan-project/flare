@@ -24,8 +24,18 @@ export function fetchApi(method: apiMethod, path: string, req?: any) {
       return acc;
     }, {} as Record<string, any>);
 
-    const query = new URLSearchParams(filteredReq).toString();
-    if (query) url += `?${query}`;
+    const query = new URLSearchParams();
+    Object.entries(filteredReq).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        // 配列の場合は各要素をappend
+        value.forEach(v => query.append(key, String(v)));
+      } else {
+        query.append(key, String(value));
+      }
+    });
+
+    const queryString = query.toString();
+    if (queryString) url += `?${queryString}`;
   }
 
   return fetch(url, options).then((res) => res.json());

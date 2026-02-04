@@ -1,8 +1,6 @@
 package blogs
 
 import (
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/vantan-project/flare/internal/custom"
@@ -15,7 +13,7 @@ type indexReqest struct {
 	Offset  *int    `query:"offset"`
 	UserId  *uint   `query:"userId"`
 	DaysAgo *uint   `query:"daysAgo"`
-	TagIds  *string `query:"tagIds"`
+	TagIds  []uint  `query:"tagIds"`
 }
 
 type indexResponseData struct {
@@ -46,26 +44,15 @@ func Index(cc *custom.Context) error {
 	query := cc.DB.Model(&model.Blog{})
 	// ユーザーIDが存在していた場合。
 	if req.UserId != nil {
-		query = query.Where("user_id = ?", req.UserId)
+		query = query.Where("blogs.user_id = ?", req.UserId)
 	}
 	if req.DaysAgo != nil {
-		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, -int(*req.DaysAgo)))
+		query = query.Where("blogs.updated_at > ?", time.Now().AddDate(0, 0, -int(*req.DaysAgo)))
 	}
 
-	if req.TagIds != nil && *req.TagIds != "" {
-		// カンマ区切りの文字列を分割してuintの配列に変換
-		tagIdStrs := strings.Split(*req.TagIds, ",")
-		tagIds := make([]uint, 0, len(tagIdStrs))
-		for _, idStr := range tagIdStrs {
-			idStr = strings.TrimSpace(idStr)
-			if id, err := strconv.ParseUint(idStr, 10, 32); err == nil {
-				tagIds = append(tagIds, uint(id))
-			}
-		}
-		if len(tagIds) > 0 {
-			query = query.Distinct().Joins("JOIN blog_tags ON blog_tags.blog_id = blogs.id").
-				Where("blog_tags.tag_id IN (?)", tagIds)
-		}
+	if len(req.TagIds) > 0 {
+		query = query.Distinct().Joins("JOIN blog_tags ON blog_tags.blog_id = blogs.id").
+			Where("blog_tags.tag_id IN (?)", req.TagIds)
 	}
 
 	var total int64
@@ -83,15 +70,15 @@ func Index(cc *custom.Context) error {
 	if req.OrderBy != nil {
 		switch *req.OrderBy {
 		case "createdAt":
-			query = query.Order("created_at DESC")
+			query = query.Order("blogs.created_at DESC")
 		case "flarePoint":
-			query = query.Order("flare_point DESC")
+			query = query.Order("blogs.flare_point DESC")
 		case "corePoint":
-			query = query.Order("core_point DESC")
+			query = query.Order("blogs.core_point DESC")
 		case "wish":
-			query = query.Order("WishedCount DESC")
+			query = query.Order("blogs.WishedCount DESC")
 		case "bookmark":
-			query = query.Order("BookmarkedCount DESC")
+			query = query.Order("blogs.BookmarkedCount DESC")
 		}
 	}
 
