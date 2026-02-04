@@ -36,8 +36,6 @@ export function fetchApi(method: apiMethod, path: string, req?: any) {
 
     const queryString = query.toString();
     if (queryString) url += `?${queryString}`;
-    console.log(url);
-    console.log(queryString)
   }
 
   return fetch(url, options).then((res) => res.json());
