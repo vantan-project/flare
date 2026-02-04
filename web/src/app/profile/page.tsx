@@ -98,7 +98,7 @@ export default function () {
     window.history.replaceState(
       null,
       "",
-      `${window.location.pathname}?${params.toString()}`
+      `${window.location.pathname}?${params.toString()}`,
     );
     window.dispatchEvent(new PopStateEvent("popstate"));
   };

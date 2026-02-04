@@ -7,7 +7,7 @@ import { TagIndexResponse } from "@/lib/api/tag-index";
 type Props = {
   value: number[];
   onChange: (tags: number[]) => void;
-  onSearch: () => void;
+  onSearch: () => void; // 検索ボタン
 };
 
 export function TagSelect({ value, onChange, onSearch }: Props) {

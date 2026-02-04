@@ -7,6 +7,7 @@ export type BlogIndexRequest = {
   offset: number | null;
   userId: number | null;
   daysAgo: number | null;
+  tagIds: number[];
 };
 
 export type BlogIndexResponse = {

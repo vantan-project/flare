@@ -7,7 +7,7 @@ export type SortSelectProps<T extends string> = {
   options: {
     value: T;
     label: string;
-    onClick: () => void;
+    onClick: () => void; // 選択した時
   }[];
 };
 
