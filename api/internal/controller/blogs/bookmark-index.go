@@ -31,7 +31,7 @@ func BookmarkIndex(cc *custom.Context) error {
 		query = query.Limit(*req.Limit)
 	}
 
-	if req.Offset != nil {
+	if req.Offset != nil && req.Limit != nil {
 		query = query.Offset(*req.Offset)
 	}
 

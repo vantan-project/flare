@@ -2,8 +2,6 @@ package blogs
 
 import (
 	"github.com/vantan-project/flare/internal/custom"
-	"github.com/vantan-project/flare/internal/model"
-	"gorm.io/gorm"
 )
 
 type wishRequest struct {
@@ -15,24 +13,20 @@ type wishResponse struct {
 	Message string `json:"message"`
 }
 
+type wish struct {
+	UserID uint
+	BlogID uint
+}
+
 func Wish(cc *custom.Context) error {
 	var req wishRequest
 	cc.BindValidate(&req, nil)
 
-	var blog model.Blog
-	if err := cc.DB.Where("id = ? AND deleted_at IS NULL", req.BlogID).First(&blog).Error; err != nil {
-		return cc.JSON(404, wishResponse{
-			Status:  "error",
-			Message: "ブログが見つかりません。",
-		})
+	wish := wish{
+		UserID: cc.AuthID,
+		BlogID: req.BlogID,
 	}
-
-	user := model.User{
-		Model: gorm.Model{
-			ID: cc.AuthID,
-		},
-	}
-	if err := cc.DB.Model(&blog).Association("WishedUsers").Append(&user); err != nil {
+	if err := cc.DB.Table("wishes").Create(&wish).Error; err != nil {
 		return cc.JSON(500, wishResponse{
 			Status:  "error",
 			Message: "やってみたいの追加に失敗しました。",

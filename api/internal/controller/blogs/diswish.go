@@ -2,8 +2,6 @@ package blogs
 
 import (
 	"github.com/vantan-project/flare/internal/custom"
-	"github.com/vantan-project/flare/internal/model"
-	"gorm.io/gorm"
 )
 
 type diswishRequest struct {
@@ -19,19 +17,13 @@ func Diswish(cc *custom.Context) error {
 	var req diswishRequest
 	cc.BindValidate(&req, nil)
 
-	var blog model.Blog
-	if err := cc.DB.Where("id = ? AND deleted_at IS NULL", req.BlogID).First(&blog).Error; err != nil {
-		return cc.JSON(404, diswishResponse{
-			Status:  "error",
-			Message: "ブログが見つかりません。",
-		})
+	wish := wish{
+		UserID: cc.AuthID,
+		BlogID: req.BlogID,
 	}
-	user := model.User{
-		Model: gorm.Model{
-			ID: cc.AuthID,
-		},
-	}
-	if err := cc.DB.Model(&blog).Association("WishedUsers").Unscoped().Delete(&user); err != nil {
+	if err := cc.DB.Table("wishes").
+		Where("user_id = ? AND blog_id = ?", cc.AuthID, req.BlogID).
+		Unscoped().Delete(&wish).Error; err != nil {
 		return cc.JSON(500, diswishResponse{
 			Status:  "error",
 			Message: "やってみたいの削除に失敗しました。",
