@@ -4,7 +4,7 @@ import { QueryResponse } from "../query-response";
 export type AuthMeResponse = {
   id: number;
   name: string;
-  iconImageUrl: string;
+  iconImageUrl: string | null;
   wishedIds: number[];
   bookmarkedIds: number[];
 };

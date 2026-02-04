@@ -1,4 +1,4 @@
-package blogs
+package bookmark
 
 import (
 	"time"
@@ -8,12 +8,8 @@ import (
 )
 
 type indexReqest struct {
-	OrderBy *string `query:"orderBy"`
 	Limit   *int    `query:"limit"`
 	Offset  *int    `query:"offset"`
-	UserId  *uint   `query:"userId"`
-	DaysAgo *uint   `query:"daysAgo"`
-	TagIds  *[]uint `query:"tagIds"`
 }
 
 type indexResponseData struct {
@@ -42,18 +38,19 @@ func Index(cc *custom.Context) error {
 	var req indexReqest
 	cc.BindValidate(&req, nil)
 
-	query := cc.DB.Model(&model.Blog{})
-	// ユーザーIDが存在していた場合。
-	if req.UserId != nil {
-		query = query.Where("user_id = ?", req.UserId)
+	query := cc.DB.
+    Table("blogs AS b").
+    Joins(`
+        JOIN bookmarks AS bj
+          ON bj.blog_id = b.id
+          AND bj.deleted_at IS NULL
+    `).
+    Where("bj.user_id = ?", cc.AuthID)
+	if req.Limit != nil {
+		query = query.Limit(*req.Limit)
 	}
-	if req.DaysAgo != nil {
-		query = query.Where("updated_at > ?", time.Now().AddDate(0, 0, int(*req.DaysAgo)))
-	}
-
-	if req.TagIds != nil {
-		query = query.Joins("JOIN blog_tags ON blog_tags.blog_id = blogs.id ").
-			Where("blog_tags.tag_id IN (?)", req.TagIds)
+	if req.Offset != nil {
+		query = query.Offset(*req.Offset)
 	}
 
 	var total int64
@@ -61,36 +58,30 @@ func Index(cc *custom.Context) error {
 		return cc.JSON(500, nil)
 	}
 
-	// リレーション
-	query = query.Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at," +
-		"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
-		"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount").
+		// リレーション
+		query = query.Select(`
+				b.id,
+				b.title,
+				b.user_id,
+				b.thumbnail_image_id,
+				b.updated_at,
+				(
+						SELECT COUNT(*)
+						FROM wishes w2
+						WHERE w2.blog_id = b.id
+							AND w2.deleted_at IS NULL
+				) AS wished_count,
+				(
+						SELECT COUNT(*)
+						FROM bookmarks bm2
+						WHERE bm2.blog_id = b.id
+							AND bm2.deleted_at IS NULL
+				) AS bookmarked_count
+		`).
 		Preload("User.Profile.Image").
 		Preload("Tags").
-		Preload("Image")
-
-	if req.OrderBy != nil {
-		switch *req.OrderBy {
-		case "createdAt":
-			query = query.Order("created_at DESC")
-		case "flarePoint":
-			query = query.Order("flare_point DESC")
-		case "corePoint":
-			query = query.Order("core_point DESC")
-		case "wish":
-			query = query.Order("WishedCount DESC")
-		case "bookmark":
-			query = query.Order("BookmarkedCount DESC")
-		}
-	}
-
-	if req.Limit != nil {
-		query = query.Limit(*req.Limit)
-	}
-	// offsetはlimitと一緒じゃないとダメみたい。
-	if req.Offset != nil && req.Limit != nil {
-		query = query.Offset(*req.Offset)
-	}
+		Preload("Image").
+		Order("bj.created_at DESC")
 
 	var blogs []model.Blog
 	if err := query.Find(&blogs).Error; err != nil {

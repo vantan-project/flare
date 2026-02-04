@@ -2,15 +2,16 @@ import { fetchApi } from "@/utils/fetch-api";
 import { QueryResponse } from "../query-response";
 
 export type BlogIndexRequest = {
-  orderBy: "createdAt" | "flarePoint" | "corePoint";
+  orderBy: "createdAt" | "flarePoint" | "corePoint" | "wish" | "bookmark";
   limit: number | null;
   offset: number | null;
   userId: number | null;
   daysAgo: number | null;
+  tagIds: number[];
 };
 
 export type BlogIndexResponse = {
-  id : number;
+  id: number;
   title: string;
   thumbnailImageUrl: string;
   user: {
@@ -18,15 +19,15 @@ export type BlogIndexResponse = {
     name: string;
     iconImageUrl: string;
   };
-  tags: {
-    id: number;
-    name: string;
-  }[]
   wishesCount: number;
   bookmarksCount: number;
   updateAt: string;
 }[];
 
-export function blogIndex(): Promise<QueryResponse<{ total: number }>> {
+export function blogIndex(
+  req: BlogIndexRequest
+): Promise<QueryResponse<BlogIndexResponse, { total: number }>> {
   return fetchApi("GET", "/blogs");
+  // TODO: reqを渡すとエラーになってしまう
+  // return fetchApi("GET", "/blogs", req);
 }

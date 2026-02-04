@@ -41,7 +41,7 @@ export function Toast<T extends string>({
       positionFromNewest === 1 &&
         cn("z-999 scale-95", placement.includes("top") ? "pt-2" : "pb-2"),
       positionFromNewest === 2 &&
-        cn("z-998 scale-90", placement.includes("top") ? "pt-4" : "pb-4"),
+        cn("z-998 scale-90", placement.includes("top") ? "pt-4" : "pb-4")
     );
 
   return (
@@ -52,7 +52,7 @@ export function Toast<T extends string>({
         placement.includes("bottom") && "bottom-2",
         placement.includes("left") && "left-2",
         placement.includes("right") && "right-2",
-        placement.includes("center") && "left-1/2 -translate-x-1/2",
+        placement.includes("center") && "left-1/2 -translate-x-1/2"
       )}
       style={{ zIndex }}
       onMouseEnter={() => {
@@ -87,11 +87,9 @@ export function Toast<T extends string>({
               >
                 <div
                   className={cn(
-                    "p-3 w-72 bg-base rounded-2xl border flex items-center gap-3",
-                    toast.type === "error" &&
-                      "text-error border-error bg-[color-mix(in_srgb,var(--color-error)_10%,var(--color-base)_90%)]",
-                    toast.type === "success" &&
-                      "text-success border-success bg-[color-mix(in_srgb,var(--color-success)_10%,var(--color-base)_90%)]",
+                    "p-3 w-72 bg-base border-l-2 flex items-center gap-3 rounded-lg shadow",
+                    toast.type === "error" && "text-error",
+                    toast.type === "success" && "text-success"
                   )}
                 >
                   {(toast.type === "error" || toast.type === "success") && (
