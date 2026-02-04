@@ -52,6 +52,7 @@ export default function () {
       offset: 0,
       daysAgo: null,
       userId: me.id,
+      tagIds: []
     };
 
     setIndexSearch(req);
@@ -161,6 +162,7 @@ export default function () {
       <div className="flex flex-col gap-3">
         {blogs[mode].map((blog) => (
           <BlogSideCard
+            id={blog.id}
             key={blog.id}
             title={`${blog.title}${mode}`}
             user={blog.user}

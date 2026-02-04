@@ -112,6 +112,7 @@ export default function BlogPage() {
       <div className="grid gap-3">
         {blogs.map((b) => (
           <BlogSideCard
+            id={b.id}
             key={b.id}
             title={b.title}
             user={b.user}

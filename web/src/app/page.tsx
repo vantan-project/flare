@@ -91,6 +91,7 @@ function Page() {
         <div className="flex gap-5 overflow-x-auto pb-1">
           {flareBlogs.map((b) => (
             <BlogCard
+              id={b.id}
               key={b.id}
               title={b.title}
               user={b.user}
@@ -108,6 +109,7 @@ function Page() {
         <div className="flex gap-5 overflow-x-auto pb-1">
           {coreBlogs.map((b) => (
             <BlogCard
+              id={b.id}
               key={b.id}
               title={b.title}
               user={b.user}
@@ -127,6 +129,7 @@ function Page() {
         <div className="flex flex-col gap-3 overflow-y-auto">
           {newBlogs.map((b) => (
             <BlogSideCard
+              id={b.id}
               key={b.id}
               title={b.title}
               user={b.user}
