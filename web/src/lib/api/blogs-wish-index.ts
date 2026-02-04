@@ -9,7 +9,7 @@ export type BlogWishIndexRequest = {
 
 export type BlogWishIndexResponse = BlogIndexResponse;
 
-export function blogsWishIdex(
+export function blogWishIndex(
   req: BlogWishIndexRequest
 ): Promise<QueryResponse<BlogWishIndexResponse>> {
   return fetchApi("GET", "/blogs/wish", req);

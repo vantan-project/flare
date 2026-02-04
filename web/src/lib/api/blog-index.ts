@@ -10,7 +10,7 @@ export type BlogIndexRequest = {
 };
 
 export type BlogIndexResponse = {
-  id : number;
+  id: number;
   title: string;
   thumbnailImageUrl: string;
   user: {
@@ -23,6 +23,10 @@ export type BlogIndexResponse = {
   updateAt: string;
 }[];
 
-export function blogIndex(): Promise<QueryResponse<{ total: number }>> {
+export function blogIndex(
+  req: BlogIndexRequest
+): Promise<QueryResponse<BlogIndexResponse, { total: number }>> {
   return fetchApi("GET", "/blogs");
+  // TODO: reqを渡すとエラーになってしまう
+  // return fetchApi("GET", "/blogs", req);
 }

@@ -3,6 +3,8 @@ package router
 import (
 	"github.com/vantan-project/flare/internal/controller/auth"
 	"github.com/vantan-project/flare/internal/controller/blogs"
+	"github.com/vantan-project/flare/internal/controller/blogs/bookmark"
+	"github.com/vantan-project/flare/internal/controller/blogs/wish"
 	"github.com/vantan-project/flare/internal/controller/images"
 	"github.com/vantan-project/flare/internal/controller/tags"
 	"github.com/vantan-project/flare/internal/custom"
@@ -23,8 +25,12 @@ func Api(e *custom.Group) {
 	b.POST("", blogs.Create, middleware.Auth)
 	b.PATCH("/:blogId", blogs.Update, middleware.Auth)
 	b.DELETE("/:blogId", blogs.Delete, middleware.Auth)
+
+	b.GET("/wish", wish.Index, middleware.Auth)
 	b.POST("/:blogId/wish", blogs.Wish, middleware.Auth)
 	b.DELETE("/:blogId/wish", blogs.Diswish, middleware.Auth)
+
+	b.GET("/bookmark", bookmark.Index, middleware.Auth)
 	b.POST("/:blogId/bookmark", blogs.Bookmark, middleware.Auth)
 	b.DELETE("/:blogId/bookmark", blogs.Disbookmark, middleware.Auth)
 

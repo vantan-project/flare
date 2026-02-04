@@ -36,7 +36,7 @@ export function BlogCard({
         <div className="flex items-center gap-1">
           <div className="relative w-5 h-5 overflow-hidden rounded-full">
             <Image
-              src={user.iconImageUrl || "/defaultaveter.svg"}
+              src={user.iconImageUrl || "/default-aveter.svg"}
               alt={user.name}
               fill
             />
