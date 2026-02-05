@@ -1,5 +1,6 @@
 "use client";
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
+import { BlogSideCardSkeleton } from "@/components/blog-sidecard/blog-sidecard-skeleton";
 import { SortSelect } from "@/components/sort-select/sort-select";
 import { TagSelect } from "@/components/tag-select/tag-select";
 import {
@@ -14,6 +15,7 @@ export default function BlogPage() {
   const [search, setSearch] = useState<BlogIndexRequest>();
   const [blogs, setBlogs] = useState<BlogIndexResponse>([]);
   const [tagIds, setTagIds] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -47,7 +49,10 @@ export default function BlogPage() {
 
   useEffect(() => {
     if (!search) return;
-    blogIndex(search).then((res) => setBlogs(res.data));
+    setIsLoading(true);
+    blogIndex(search)
+      .then((res) => setBlogs(res.data))
+      .finally(() => setIsLoading(false));
   }, [search]);
 
   if (!search) return null;
@@ -96,17 +101,21 @@ export default function BlogPage() {
       <div className="px-5">
         <div className="mb-5 font-medium">投稿一覧</div>
         <div className="grid gap-3">
-          {blogs.map((b) => (
-            <BlogSideCard
-              id={b.id}
-              key={b.id}
-              title={b.title}
-              user={b.user}
-              wishedCount={b.wishesCount}
-              bookmarkedCount={b.bookmarksCount}
-              thumbnailImageUrl={b.thumbnailImageUrl}
-            />
-          ))}
+          {isLoading
+            ? Array.from({ length: 10 }).map((_, i) => (
+              <BlogSideCardSkeleton key={`blogs-skeleton-${i}`} />
+            ))
+            : blogs.map((b) => (
+              <BlogSideCard
+                id={b.id}
+                key={b.id}
+                title={b.title}
+                user={b.user}
+                wishedCount={b.wishesCount}
+                bookmarkedCount={b.bookmarksCount}
+                thumbnailImageUrl={b.thumbnailImageUrl}
+              />
+            ))}
         </div>
       </div>
     </div>

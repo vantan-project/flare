@@ -84,7 +84,7 @@ export const TagInput = forwardRef<HTMLInputElement, Props>(
               <input
                 ref={inputRef}
                 className={cn(
-                  "w-full outline-none [&::-webkit-inner-spin-button]:[-webkit-appearance:none] autofill:bg-transparent bg-clip-text",
+                  "w-full outline-none [&::-webkit-inner-spin-button]:[-webkit-appearance:none] autofill:bg-transparent bg-clip-text text-[16px]",
                   value.length > 0 && "not-focus:absolute not-focus:w-0",
                 )}
                 value={search}
@@ -92,16 +92,16 @@ export const TagInput = forwardRef<HTMLInputElement, Props>(
                 onBlur={() => setSearch("")}
                 type="text"
                 placeholder={value.length > 0 ? "" : placeholder}
-                // onFocus={() => {
-                //   if (!inputRef.current) return;
+              // onFocus={() => {
+              //   if (!inputRef.current) return;
 
-                //   // 少し遅延させてキーボード表示後にスクロール
-                //   setTimeout(() => {
-                //     const rect = inputRef.current!.getBoundingClientRect();
-                //     const scrollTop = window.scrollY + rect.top - 50; // top-50px
-                //     window.scrollTo({ top: scrollTop, behavior: "smooth" });
-                //   }, 100); // 100msぐらいが安定
-                // }}
+              //   // 少し遅延させてキーボード表示後にスクロール
+              //   setTimeout(() => {
+              //     const rect = inputRef.current!.getBoundingClientRect();
+              //     const scrollTop = window.scrollY + rect.top - 50; // top-50px
+              //     window.scrollTo({ top: scrollTop, behavior: "smooth" });
+              //   }, 100); // 100msぐらいが安定
+              // }}
               />
               {icon && <div>{icon}</div>}
             </div>
