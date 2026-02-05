@@ -6,6 +6,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/vantan-project/flare/internal/custom"
+	"github.com/vantan-project/flare/internal/middleware"
 	"github.com/vantan-project/flare/internal/router"
 )
 
@@ -17,8 +18,18 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close() // 後処理
+	storage, err := custom.NewS3()
+	if err != nil {
+		log.Fatal(err)
+	}
+	ai, err := custom.NewAI()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	e := custom.NewEcho(db)
+	e := custom.NewEcho(db, storage, ai)
+	e.Use(middleware.CORS)
+	e.Use(middleware.Recover)
 
 	e.GET("/", func(cc *custom.Context) error {
 		return cc.JSON(http.StatusOK, "Hello Echo!")

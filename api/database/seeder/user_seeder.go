@@ -11,7 +11,7 @@ import (
 
 func UserSeeder(db *custom.Gorm) error {
 	users := []model.User{
-		{Name: "nakao1", Email: "nakao1@example.com", Password: "password"},
+		{Email: "nakao1@example.com", Password: "password"},
 	}
 
 	for i := range users {
