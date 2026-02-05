@@ -211,7 +211,7 @@ export default function ImageEditor() {
       <AnimatePresence>
         {isFocused && (
           <motion.div
-            className="fixed bottom-24 right-2 flex flex-col gap-2"
+            className="fixed top-24 right-2 flex flex-col gap-2"
             initial={{ x: 80, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 80, opacity: 0 }}
