@@ -56,7 +56,7 @@ export function Footer() {
           </div>
         </div>
       </Link>
-      <Link href="/blogs/create">
+      <Link href={me ? "/blogs/create" : "/login"}>
         <div className={cn(pathname == "/blogs/create" && "text-primary")}>
           <div className="flex flex-col items-center justify-center w-12 h-12 text-[8px]">
             <Icon name="add" size={32} />
