@@ -1,7 +1,7 @@
-import { Icon } from "@/components/icon/icon";
 import Image from "next/image";
 import { BookmarkButton } from "../buttons/bookmark-button";
 import { WishButton } from "../buttons/wish-button";
+import { useRouter } from "next/navigation";
 
 export type BlogCordProps = {
   id: number;
@@ -23,8 +23,13 @@ export function BlogSideCard({
   bookmarkedCount,
   thumbnailImageUrl,
 }: BlogCordProps) {
+  const router = useRouter();
+
   return (
-    <div className="grid grid-cols-[86px_auto] gap-3 border-b pb-2">
+    <div
+      className="grid grid-cols-[86px_auto] gap-3 border-b pb-2"
+      onClick={() => router.push(`/blogs/detail?blogId=${id}`)}
+    >
       <div className="relative w-21.5 h-12.5 overflow-hidden rounded-[10px]">
         <Image
           src={thumbnailImageUrl}
@@ -50,7 +55,7 @@ export function BlogSideCard({
             </div>
             <div className="text-[12px]">{user.name}</div>
           </div>
-          <div className="flex gap-1 text-gray">
+          <div className="flex gap-1 text-gray z-10">
             <WishButton id={id} wishedCount={wishedCount} />
             <BookmarkButton id={id} bookmarkedCount={bookmarkedCount} />
           </div>

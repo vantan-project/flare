@@ -122,11 +122,9 @@ export default function ImageEditor() {
   if (!editor) return null;
 
   return (
-    <div className="px-4 flex flex-col gap-8 py-28">
-      <div className="fixed z-9999 top-0 inset-x-0 bg-primary rounded-b-[20px] h-16" />
-
+    <div className="px-4 flex flex-col gap-8">
       <div>
-        <p className="mt-4 mb-2 font-medium">サムネイル</p>
+        <p className="mb-2 font-medium">サムネイル</p>
         <label
           htmlFor="image"
           className={cn(
@@ -190,7 +188,7 @@ export default function ImageEditor() {
         onChange={(v) => setValue("tagIds", v)}
       />
 
-      <div className="pr-6">
+      <div className="pr-6 mb-12">
         <p className="pl-2 mb-2 font-medium">内容</p>
         <EditorContent ref={editerRef} editor={editor} />
         <p

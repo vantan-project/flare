@@ -130,9 +130,9 @@ export default function () {
   if (!mode || !me) return null;
 
   return (
-    <div className="px-5 mt-16 relative">
+    <div className="px-5 relative">
       <div
-        className="absolute -top-12 right-4 border-b text-main-hover border-main-hover flex gap-2 px-3 py-1 cursor-pointer"
+        className="absolute -top-16 right-4 border-b text-main-hover border-main-hover flex gap-2 px-3 py-1 cursor-pointer"
         onClick={() => {
           setMe(null);
           accessToken.remove();
@@ -176,7 +176,7 @@ export default function () {
           </button>
         </div>
       </div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 overflow-y-auto h-96">
         {blogs[mode].map((blog) => (
           <BlogSideCard
             id={blog.id}

@@ -10,7 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { set } from "react-hook-form";
+import Image from "next/image";
 
 export default function BlogPage() {
   const router = useRouter();
@@ -54,12 +54,11 @@ export default function BlogPage() {
     blogIndex(search).then((res) => setBlogs(res.data));
   }, [search]);
 
-
   if (!search) return null;
 
   return (
-    <div className="px-4">
-      <div className="fixed top-12 right-4 flex items-end justify-end pt-[9px] gap-2 z-60">
+    <div>
+      <div className="fixed top-24 right-4 flex items-end justify-end gap-2 z-40">
         <SortSelect
           value={search?.orderBy || null}
           options={[
@@ -98,19 +97,21 @@ export default function BlogPage() {
           onSearch={() => setSearch({ ...search, tagIds: tagIds })}
         />
       </div>
-      <div className="pt-2 pb-3">投稿一覧</div>
-      <div className="grid gap-3">
-        {blogs.map((b) => (
-          <BlogSideCard
-            id={b.id}
-            key={b.id}
-            title={b.title}
-            user={b.user}
-            wishedCount={b.wishesCount}
-            bookmarkedCount={b.bookmarksCount}
-            thumbnailImageUrl={b.thumbnailImageUrl}
-          />
-        ))}
+      <div className="px-5">
+        <div className="mb-5 font-medium">投稿一覧</div>
+        <div className="grid gap-3">
+          {blogs.map((b) => (
+            <BlogSideCard
+              id={b.id}
+              key={b.id}
+              title={b.title}
+              user={b.user}
+              wishedCount={b.wishesCount}
+              bookmarkedCount={b.bookmarksCount}
+              thumbnailImageUrl={b.thumbnailImageUrl}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

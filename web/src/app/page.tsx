@@ -8,6 +8,7 @@ import { BlogCard } from "@/components/blog-card/blog-card";
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 function Page() {
   const router = useRouter();
@@ -51,7 +52,7 @@ function Page() {
 
   return (
     <div>
-      <div className="fixed top-12 right-4 flex items-end justify-end pt-[9px] mx-5 gap-2 z-50">
+      <div className="fixed top-24 right-4 flex items-end justify-end gap-2 z-40">
         <SortSelect
           value={null}
           options={[
@@ -94,7 +95,7 @@ function Page() {
         />
       </div>
 
-      <div className="p-5">
+      <div className="px-5">
         <div className="font-medium border-b-2 border-primary p-2 mb-3">
           高熱意度ピックアップ
         </div>

@@ -6,6 +6,7 @@ import { useIsWished, useMeStore } from "@/stores/use-me-store";
 import { Icon } from "../icon/icon";
 import { useToastStore } from "@/stores/use-toast-store";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface WishButtonProps {
   id: number;
@@ -14,11 +15,13 @@ interface WishButtonProps {
 
 export function WishButton({ id, wishedCount }: WishButtonProps) {
   const { me, addWish, removeWish } = useMeStore();
-  const isWished = useIsWished(id)
+  const isWished = useIsWished(id);
   const { addToast } = useToastStore();
   const [count, setCount] = useState(wishedCount);
 
-  const handleClick = () => {
+  const router = useRouter();
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 親要素へのクリックイベント伝播を防止
     if (isWished) {
       blogWishDestroy(id).then((res) => {
         if (res.status === "success") {
@@ -27,9 +30,9 @@ export function WishButton({ id, wishedCount }: WishButtonProps) {
             addToast("success", res.message);
             setCount(count - 1);
           }
-        }
-        else if (res.status === "error") {
-          addToast("error", res.message);
+        } else {
+          addToast("error", "やってみたいの登録にはログインが必要です");
+          router.push("/login");
         }
       });
     } else {
@@ -40,21 +43,21 @@ export function WishButton({ id, wishedCount }: WishButtonProps) {
             addToast("success", res.message);
             setCount(count + 1);
           }
-        }
-        else if (res.status === "error") {
-          addToast("error", res.message);
+        } else {
+          addToast("error", "やってみたいの登録にはログインが必要です");
+          router.push("/login");
         }
       });
     }
   };
 
   return (
-    <button className="flex items-center gap-0.5 cursor-pointer" onClick={handleClick}>
+    <button
+      className="flex items-center gap-0.5 cursor-pointer"
+      onClick={handleClick}
+    >
       <div className={`${isWished && "text-primary"}`}>
-        <Icon
-          size={20}
-          name="flare"
-        />
+        <Icon size={20} name="flare" />
       </div>
       <p className="text-black">{count}</p>
     </button>

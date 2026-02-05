@@ -47,7 +47,7 @@ export function Toast<T extends string>({
   return (
     <div
       className={cn(
-        "fixed z-50",
+        "fixed z-1000",
         placement.includes("top") && "top-2",
         placement.includes("bottom") && "bottom-2",
         placement.includes("left") && "left-2",
@@ -87,7 +87,7 @@ export function Toast<T extends string>({
               >
                 <div
                   className={cn(
-                    "p-3 w-82 bg-base border-l-2 flex items-center gap-3 rounded-lg shadow",
+                    "p-3 w-82 bg-base border-l-2 flex items-center gap-3 rounded-lg shadow-xl",
                     toast.type === "error" && "text-error",
                     toast.type === "success" && "text-success"
                   )}

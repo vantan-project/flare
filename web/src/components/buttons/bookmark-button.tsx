@@ -6,6 +6,7 @@ import { useIsBookmarked, useMeStore } from "@/stores/use-me-store";
 import { Icon } from "../icon/icon";
 import { useToastStore } from "@/stores/use-toast-store";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface BookmarkButtonProps {
   id: number;
@@ -18,7 +19,9 @@ export function BookmarkButton({ id, bookmarkedCount }: BookmarkButtonProps) {
   const { addToast } = useToastStore();
   const [count, setCount] = useState(bookmarkedCount);
 
-  const handleClick = () => {
+  const router = useRouter();
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 親要素へのクリックイベント伝播を防止
     if (isBookmarked) {
       blogBookmarkDestroy(id).then((res) => {
         if (res.status === "success") {
@@ -27,9 +30,9 @@ export function BookmarkButton({ id, bookmarkedCount }: BookmarkButtonProps) {
             addToast("success", res.message);
             setCount(count - 1);
           }
-        }
-        else if (res.status === "error") {
-          addToast("error", res.message);
+        } else {
+          addToast("error", "ブックマークの登録にはログインが必要です");
+          router.push("/login");
         }
       });
     } else {
@@ -40,21 +43,21 @@ export function BookmarkButton({ id, bookmarkedCount }: BookmarkButtonProps) {
             addToast("success", res.message);
             setCount(count + 1);
           }
-        }
-        else if (res.status === "error") {
-          addToast("error", res.message);
+        } else {
+          addToast("error", "ブックマークの登録にはログインが必要です");
+          router.push("/login");
         }
       });
     }
   };
 
   return (
-    <button className="flex items-center gap-0.5 cursor-pointer" onClick={handleClick}>
+    <button
+      className="flex items-center gap-0.5 cursor-pointer"
+      onClick={handleClick}
+    >
       <div className={`${isBookmarked && "text-secondary"}`}>
-        <Icon
-          size={20}
-          name="book"
-        />
+        <Icon size={20} name="book" />
       </div>
       <p className="text-black">{count}</p>
     </button>

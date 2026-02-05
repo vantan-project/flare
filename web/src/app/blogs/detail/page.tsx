@@ -6,8 +6,10 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "next/image";
 import { PreviewImage } from "@/components/preview-image/preview-image";
+import { useRouter } from "next/navigation";
 
 export default function () {
+  const router = useRouter();
   const [blog, setBlog] = useState<BlogShowResponse | null>(null);
 
   const editor = useEditor({
@@ -55,8 +57,8 @@ export default function () {
   if (!blog) return null;
 
   return (
-    <div className="h-screen w-screen bg-base flex flex-col pt-16 pb-24 overflow-y-auto">
-      <div className="relative aspect-12/9">
+    <div className="h-screen w-screen bg-base flex flex-col">
+      <div className="relative aspect-12/7">
         <Image
           src={blog.thumbnailImageUrl}
           alt="画像なし"
@@ -65,7 +67,7 @@ export default function () {
         />
       </div>
 
-      <div className="py-4 px-5 flex flex-col gap-6">
+      <div className="py-4 px-5 flex flex-col gap-6 pb-24">
         <div>
           <h2 className="text-2xl font-medium">{blog.title}</h2>
           <p>{blog.updatedAt}</p>
@@ -77,6 +79,10 @@ export default function () {
               type="button"
               key={tag.id}
               className="px-3 py-1 bg-primary-hover text-white rounded-full text-sm cursor-pointer"
+              onClick={() => {
+                const json = encodeURIComponent(JSON.stringify([tag.id]));
+                router.push(`/blogs?tagIds=${json}`);
+              }}
             >
               {"# "}
               {tag.name}
