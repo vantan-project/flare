@@ -1,6 +1,7 @@
 "use client";
 
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
+import { imageStore, ImageStoreRequest } from "@/lib/api/image-store";
 import { Icon } from "@/components/icon/icon";
 import {
   BlogBookmarkIndexRequest,
@@ -17,13 +18,17 @@ import {
   BlogWishIndexResponse,
   blogWishIndex,
 } from "@/lib/api/blogs-wish-index";
+import { useErrorStore } from "@/stores/use-error-store";
 import { useMeStore } from "@/stores/use-me-store";
+import { useForm } from "react-hook-form";
 import { useToastStore } from "@/stores/use-toast-store";
 import { accessToken } from "@/utils/access-token";
 import { cn } from "@/utils/cn";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { userUpdate } from "@/lib/api/user-update";
 
 export default function () {
   const router = useRouter();
@@ -31,8 +36,11 @@ export default function () {
   const { me, setMe } = useMeStore();
   const { addToast } = useToastStore();
   const [mode, setMode] = useState<"index" | "wish" | "bookmark" | null>(null);
-
+  const [file, setFile] = useState<File | null>(null);
+  const { error: imageError, setError: setImageError } = useErrorStore("image");
+  const [iconImageUrlId, setIconImageUrlId] = useState<number | null>(null);
   const [indexBlogs, setIndexBlogs] = useState<BlogIndexResponse>([]);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [wishedBlogs, setWishedBlogs] = useState<BlogBookmarkIndexResponse>([]);
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<BlogWishIndexResponse>(
     [],
@@ -145,12 +153,46 @@ export default function () {
       </div>
       <div className="w-full h-45.25 flex flex-col justify-between items-center">
         <div className="relative w-35 h-35 rounded-full overflow-hidden">
-          <Image
-            alt={me.name}
-            src={me.iconImageUrl || "/default-aveter.svg"}
-            fill
-            className="object-cover"
-          />
+          <label
+            htmlFor="image"
+            className={cn(imageError && "bg-error/20 outline-error")}
+          >
+            <input
+              id="image"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                if (imageError) setImageError("image", "");
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setFile(file);
+                setPreviewUrl(URL.createObjectURL(file));
+                imageStore({ image: file }).then((res) => {
+                  if (res.status === "success") {
+                    setMe({ ...me, iconImageUrl: res.imageUrl });
+                    userUpdate;
+                    addToast("success", "画像を更新しました");
+                    return;
+                  }
+
+                  addToast("error", "画像アップロードに失敗しました。");
+                  setFile(null);
+                  setPreviewUrl(null);
+                });
+              }}
+            />
+            <Image
+              alt={me.name}
+              src={
+                file
+                  ? URL.createObjectURL(file)
+                  : me.iconImageUrl || "/default-aveter.svg"
+              }
+              fill
+              className="object-cover"
+            />
+          </label>
         </div>
         <div className="text-6 font-medium">{me.name}</div>
       </div>
