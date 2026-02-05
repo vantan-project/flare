@@ -19,6 +19,7 @@ import {
   blogWishIndex,
 } from "@/lib/api/blogs-wish-index";
 import { useErrorStore } from "@/stores/use-error-store";
+import { authMeUpdate } from "@/lib/api/auth-me-update";
 import { useMeStore } from "@/stores/use-me-store";
 import { useForm } from "react-hook-form";
 import { useToastStore } from "@/stores/use-toast-store";
@@ -170,9 +171,15 @@ export default function () {
                 setPreviewUrl(URL.createObjectURL(file));
                 imageStore({ image: file }).then((res) => {
                   if (res.status === "success") {
-                    setMe({ ...me, iconImageUrl: res.imageUrl });
-                    userUpdate;
-                    addToast("success", "画像を更新しました");
+                    const { imageId, imageUrl } = res;
+
+                    authMeUpdate({ iconImageId: imageId }).then((updateRes) => {
+                      if (updateRes.status === "success") {
+                        setMe({ ...me, iconImageUrl: imageUrl });
+                        setFile(null);
+                        addToast("success", updateRes.message);
+                      }
+                    });
                     return;
                   }
 
