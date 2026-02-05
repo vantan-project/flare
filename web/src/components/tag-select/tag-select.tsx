@@ -75,7 +75,7 @@ export function TagSelect({ value, onChange, onSearch }: Props) {
           >
             <div className="pt-3 px-3">
               <input
-                className="p-2.5 rounded-[15px] bg-white border border-gray w-full"
+                className="p-2.5 rounded-[15px] bg-white border border-gray w-full text-[16px]"
                 placeholder="検索"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
