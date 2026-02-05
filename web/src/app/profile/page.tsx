@@ -1,7 +1,7 @@
 "use client";
 
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
-import { imageStore, ImageStoreRequest } from "@/lib/api/image-store";
+import { imageStore } from "@/lib/api/image-store";
 import { Icon } from "@/components/icon/icon";
 import {
   BlogBookmarkIndexRequest,
@@ -29,7 +29,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { userUpdate } from "@/lib/api/user-update";
 
 export default function () {
   const router = useRouter();
@@ -39,7 +38,6 @@ export default function () {
   const [mode, setMode] = useState<"index" | "wish" | "bookmark" | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const { error: imageError, setError: setImageError } = useErrorStore("image");
-  const [iconImageUrlId, setIconImageUrlId] = useState<number | null>(null);
   const [indexBlogs, setIndexBlogs] = useState<BlogIndexResponse>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [wishedBlogs, setWishedBlogs] = useState<BlogBookmarkIndexResponse>([]);
