@@ -30,7 +30,7 @@ const scheduleDismiss = (get: () => ToastState, set: (state: Partial<ToastState>
         scheduleDismiss(get, set);
       }
     }
-  }, 3000);
+  }, 1000);
 };
 
 export const useToastStore = create<ToastState>((set, get) => ({

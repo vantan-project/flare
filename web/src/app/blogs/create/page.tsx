@@ -188,7 +188,7 @@ export default function ImageEditor() {
         onChange={(v) => setValue("tagIds", v)}
       />
 
-      <div className="pr-6 mb-12">
+      <div className="pr-6">
         <p className="pl-2 mb-2 font-medium">内容</p>
         <EditorContent ref={editerRef} editor={editor} />
         <p
@@ -202,16 +202,17 @@ export default function ImageEditor() {
       </div>
 
       <button
-        className="fixed left-1/2 -translate-x-1/2 bottom-20 bg-primary p-3 px-8 rounded-2xl text-white font-medium"
+        className="bg-primary p-3 px-8 rounded-2xl text-white font-medium"
         type="button"
         onClick={handleSubmit(onSubmit)}
       >
         投稿
       </button>
+
       <AnimatePresence>
         {isFocused && (
           <motion.div
-            className="fixed bottom-24 right-2 flex flex-col gap-2"
+            className="fixed top-24 right-2 flex flex-col gap-2"
             initial={{ x: 80, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 80, opacity: 0 }}
