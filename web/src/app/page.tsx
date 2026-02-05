@@ -156,7 +156,7 @@ function Page() {
         <div className="h-3 mb-5 border-b border-base-hover -mx-5" />
         <div className="mb-3 text-sm">
           新着投稿
-          <Link href="/" className="px-3 text-xs">
+          <Link href="/blogs" className="px-3 text-xs">
             もっと見る＞
           </Link>
         </div>

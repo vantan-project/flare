@@ -81,7 +81,7 @@ export function TagSelect({ value, onChange, onSearch }: Props) {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <div className="p-3 flex flex-wrap gap-2 overflow-y-auto h-56">
+            <div className="p-3 flex flex-wrap gap-2 overflow-y-auto max-h-56">
               {selectedTags.map(({ id, name }) => (
                 <div
                   key={id}

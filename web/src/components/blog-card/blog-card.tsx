@@ -1,4 +1,3 @@
-import { Icon } from "@/components/icon/icon";
 import Image from "next/image";
 import { BookmarkButton } from "../buttons/bookmark-button";
 import { WishButton } from "../buttons/wish-button";
@@ -43,17 +42,17 @@ export function BlogCard({
       </div>
 
       <div className="flex justify-between">
-        <div className="flex items-center gap-1">
-          <div className="relative w-5 h-5 overflow-hidden rounded-full">
+        <div className="flex items-center gap-1 min-w-0 flex-1">
+          <div className="relative w-5 h-5 overflow-hidden rounded-full shrink-0">
             <Image
               src={user.iconImageUrl || "/default-aveter.svg"}
               alt={user.name}
               fill
             />
           </div>
-          <div>{user.name}</div>
+          <div className="truncate">{user.name}</div>
         </div>
-        <div className="flex gap-1 text-gray">
+        <div className="flex gap-1 text-gray shrink-0">
           <WishButton id={id} wishedCount={wishedCount} />
           <BookmarkButton id={id} bookmarkedCount={bookmarkedCount} />
         </div>
