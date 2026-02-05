@@ -1,6 +1,7 @@
 "use client";
 
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
+import { BlogSideCardSkeleton } from "@/components/blog-sidecard/blog-sidecard-skeleton";
 import { Icon } from "@/components/icon/icon";
 import {
   BlogBookmarkIndexRequest,
@@ -37,6 +38,11 @@ export default function () {
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<BlogWishIndexResponse>(
     [],
   );
+  const [isLoading, setIsLoading] = useState<Record<"index" | "wish" | "bookmark", boolean>>({
+    index: true,
+    wish: true,
+    bookmark: true,
+  });
   const blogs = {
     index: indexBlogs,
     wish: wishedBlogs,
@@ -73,19 +79,26 @@ export default function () {
 
   useEffect(() => {
     if (!indexSearch) return;
-    blogIndex(indexSearch).then((res) => setIndexBlogs(res.data));
+    setIsLoading((prev) => ({ ...prev, index: true }));
+    blogIndex(indexSearch)
+      .then((res) => setIndexBlogs(res.data))
+      .finally(() => setIsLoading((prev) => ({ ...prev, index: false })));
   }, [indexSearch]);
 
   useEffect(() => {
     if (!wishSearch) return;
-    blogWishIndex(wishSearch).then((res) => setWishedBlogs(res.data));
+    setIsLoading((prev) => ({ ...prev, wish: true }));
+    blogWishIndex(wishSearch)
+      .then((res) => setWishedBlogs(res.data))
+      .finally(() => setIsLoading((prev) => ({ ...prev, wish: false })));
   }, [wishSearch]);
 
   useEffect(() => {
     if (!bookmarkSearch) return;
-    blogBookmarkIndex(bookmarkSearch).then((res) =>
-      setBookmarkedBlogs(res.data),
-    );
+    setIsLoading((prev) => ({ ...prev, bookmark: true }));
+    blogBookmarkIndex(bookmarkSearch)
+      .then((res) => setBookmarkedBlogs(res.data))
+      .finally(() => setIsLoading((prev) => ({ ...prev, bookmark: false })));
   }, [bookmarkSearch]);
 
   const changeMode = (mode: "index" | "wish" | "bookmark") => {
@@ -177,17 +190,21 @@ export default function () {
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        {blogs[mode].map((blog) => (
-          <BlogSideCard
-            id={blog.id}
-            key={blog.id}
-            title={blog.title}
-            user={blog.user}
-            thumbnailImageUrl={blog.thumbnailImageUrl}
-            wishedCount={blog.wishesCount}
-            bookmarkedCount={blog.bookmarksCount}
-          />
-        ))}
+        {isLoading[mode]
+          ? Array.from({ length: 6 }).map((_, i) => (
+            <BlogSideCardSkeleton key={`profile-skeleton-${i}`} />
+          ))
+          : blogs[mode].map((blog) => (
+            <BlogSideCard
+              id={blog.id}
+              key={blog.id}
+              title={blog.title}
+              user={blog.user}
+              thumbnailImageUrl={blog.thumbnailImageUrl}
+              wishedCount={blog.wishesCount}
+              bookmarkedCount={blog.bookmarksCount}
+            />
+          ))}
       </div>
     </div>
   );
