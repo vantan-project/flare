@@ -184,8 +184,8 @@ export default function () {
             title={blog.title}
             user={blog.user}
             thumbnailImageUrl={blog.thumbnailImageUrl}
-            wishedCount={23}
-            bookmarkedCount={23}
+            wishedCount={blog.wishesCount}
+            bookmarkedCount={blog.bookmarksCount}
           />
         ))}
       </div>
