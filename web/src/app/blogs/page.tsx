@@ -9,15 +9,11 @@ import {
 } from "@/lib/api/blog-index";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 
 export default function BlogPage() {
-  const router = useRouter();
   const [search, setSearch] = useState<BlogIndexRequest>();
   const [blogs, setBlogs] = useState<BlogIndexResponse>([]);
   const [tagIds, setTagIds] = useState<number[]>([]);
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -47,7 +43,7 @@ export default function BlogPage() {
     const tagIds = JSON.parse(params.get("tagIds") || "[]");
     setTagIds(tagIds);
     setSearch({ orderBy, limit, offset, userId, daysAgo, tagIds });
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     if (!search) return;
