@@ -5,19 +5,17 @@ import { blogWishStore } from "@/lib/api/blog-wish-store";
 import { useIsWished, useMeStore } from "@/stores/use-me-store";
 import { Icon } from "../icon/icon";
 import { useToastStore } from "@/stores/use-toast-store";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/utils/cn";
 
-interface WishButtonProps {
+interface WishLabelButtonProps {
   id: number;
-  wishedCount: number;
 }
 
-export function WishButton({ id, wishedCount }: WishButtonProps) {
+export function WishLabelButton({ id }: WishLabelButtonProps) {
   const { me, addWish, removeWish } = useMeStore();
   const isWished = useIsWished(id);
   const { addToast } = useToastStore();
-  const [count, setCount] = useState(wishedCount);
 
   const router = useRouter();
   const handleClick = (e: React.MouseEvent) => {
@@ -28,7 +26,6 @@ export function WishButton({ id, wishedCount }: WishButtonProps) {
           if (me) {
             removeWish(id);
             addToast("success", res.message);
-            setCount(count - 1);
           }
         } else {
           addToast("error", "やってみたいの登録にはログインが必要です");
@@ -41,7 +38,6 @@ export function WishButton({ id, wishedCount }: WishButtonProps) {
           if (me) {
             addWish(id);
             addToast("success", res.message);
-            setCount(count + 1);
           }
         } else {
           addToast("error", "やってみたいの登録にはログインが必要です");
@@ -53,13 +49,14 @@ export function WishButton({ id, wishedCount }: WishButtonProps) {
 
   return (
     <button
-      className="flex items-center gap-0.5 cursor-pointer"
+      className={cn(
+        "w-fit py-2 px-3 rounded-lg flex items-center gap-2 cursor-pointer text-white",
+        isWished ? "bg-primary" : "bg-main",
+      )}
       onClick={handleClick}
     >
-      <div className={`${isWished && "text-primary"}`}>
-        <Icon size={24} name="flare" />
-      </div>
-      <p className="text-black">{count}</p>
+      <Icon size={24} name="flare" />
+      <p>やってみたい</p>
     </button>
   );
 }

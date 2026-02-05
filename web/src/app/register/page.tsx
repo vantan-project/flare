@@ -10,6 +10,7 @@ import { useErrorStore } from "@/stores/use-error-store";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
+import Image from "next/image";
 
 type Form = AuthRegisterRequest & {
   passwordConf: string;
@@ -51,10 +52,18 @@ function Page() {
     });
   };
   return (
-    <div className="px-5">
+    <div className="px-5 pb-8">
       <div className="flex flex-col gap-4">
-        <div className="font-medium text-[20px] py-5 flex justify-center">
-          新規登録
+        <div className="flex flex-col gap-4 items-center justify-center -mt-12">
+          <Image
+            src="/icon.png"
+            alt="Flare icon"
+            width={420}
+            height={420}
+            className="w-36 h-auto"
+            unoptimized
+          />
+          <div className="text-[24px] font-medium mb-8">新規登録</div>
         </div>
 
         <Input

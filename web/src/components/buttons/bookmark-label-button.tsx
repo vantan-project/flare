@@ -7,17 +7,16 @@ import { Icon } from "../icon/icon";
 import { useToastStore } from "@/stores/use-toast-store";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/utils/cn";
 
-interface BookmarkButtonProps {
+interface BookmarkLabelButtonProps {
   id: number;
-  bookmarkedCount: number;
 }
 
-export function BookmarkButton({ id, bookmarkedCount }: BookmarkButtonProps) {
+export function BookmarkLabelButton({ id }: BookmarkLabelButtonProps) {
   const { me, addBookmark, removeBookmark } = useMeStore();
   const isBookmarked = useIsBookmarked(id);
   const { addToast } = useToastStore();
-  const [count, setCount] = useState(bookmarkedCount);
 
   const router = useRouter();
   const handleClick = (e: React.MouseEvent) => {
@@ -28,7 +27,6 @@ export function BookmarkButton({ id, bookmarkedCount }: BookmarkButtonProps) {
           if (me) {
             removeBookmark(id);
             addToast("success", res.message);
-            setCount(count - 1);
           }
         } else {
           addToast("error", "ブックマークの登録にはログインが必要です");
@@ -41,7 +39,6 @@ export function BookmarkButton({ id, bookmarkedCount }: BookmarkButtonProps) {
           if (me) {
             addBookmark(id);
             addToast("success", res.message);
-            setCount(count + 1);
           }
         } else {
           addToast("error", "ブックマークの登録にはログインが必要です");
@@ -53,13 +50,14 @@ export function BookmarkButton({ id, bookmarkedCount }: BookmarkButtonProps) {
 
   return (
     <button
-      className="flex items-center gap-0.5 cursor-pointer"
+      className={cn(
+        "w-fit py-2 px-3 rounded-lg flex items-center gap-2 cursor-pointer text-white",
+        isBookmarked ? "bg-secondary text-black" : "bg-main",
+      )}
       onClick={handleClick}
     >
-      <div className={`${isBookmarked && "text-secondary"}`}>
-        <Icon size={24} name="book" />
-      </div>
-      <p className="text-black">{count}</p>
+      <Icon size={24} name="book" />
+      <p>ブックマーク</p>
     </button>
   );
 }

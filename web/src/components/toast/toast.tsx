@@ -95,7 +95,7 @@ export function Toast<T extends string>({
                   {(toast.type === "error" || toast.type === "success") && (
                     <Icon size={18} name={toast.type} />
                   )}
-                  <p className="text-black">{toast.message}</p>
+                  <p className="text-black text-sm">{toast.message}</p>
                 </div>
               </motion.div>
             );

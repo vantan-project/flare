@@ -2,6 +2,7 @@ import { fetchApi } from "@/utils/fetch-api";
 import { QueryResponse } from "../query-response";
 
 export type BlogShowResponse = {
+  id: number;
   title: string;
   thumbnailImageUrl: string;
   user: {
@@ -10,6 +11,7 @@ export type BlogShowResponse = {
     userIconUrl: string | null;
   };
   wishesCount: number;
+  bookmarksCount: number;
   tags: {
     id: number;
     name: string;

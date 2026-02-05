@@ -7,6 +7,7 @@ import { useErrorStore } from "@/stores/use-error-store";
 import { useMeStore } from "@/stores/use-me-store";
 import { useToastStore } from "@/stores/use-toast-store";
 import { accessToken } from "@/utils/access-token";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -44,8 +45,20 @@ function Page() {
   };
 
   return (
-    <form className="px-5 flex flex-col">
-      <div className="text-[24px] font-medium mb-15 text-center">ログイン</div>
+    <form className="px-5 pb-8 flex flex-col">
+      <div className="flex flex-col gap-4 items-center justify-center -mt-12">
+        <Image
+          src="/icon.png"
+          alt="Flare icon"
+          width={420}
+          height={420}
+          className="w-36 h-auto"
+          unoptimized
+        />
+        <div className="text-[24px] font-medium mb-8">
+          ログイン
+        </div>
+      </div>
       <div className="flex flex-col gap-4">
         <Input
           label="メールアドレス"
