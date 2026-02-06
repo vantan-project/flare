@@ -11,9 +11,11 @@ import { WishButton } from "@/components/buttons/wish-button";
 import { BookmarkButton } from "@/components/buttons/bookmark-button";
 import { WishLabelButton } from "@/components/buttons/wish-label-button";
 import { BookmarkLabelButton } from "@/components/buttons/bookmark-label-button";
+import { useDetailStore } from "@/stores/use-detail-store";
 
 export default function () {
   const router = useRouter();
+  const { setDetailId } = useDetailStore();
   const [blog, setBlog] = useState<BlogShowResponse | null>(null);
 
   const editor = useEditor({
@@ -95,7 +97,14 @@ export default function () {
         </div>
 
         <div className="flex justify-between items-end">
-          <div className="flex gap-2 items-center">
+          <div
+            className="flex gap-2 items-center"
+            onClick={(e) => {
+              e.stopPropagation(); // 親要素へのクリックイベント伝播を防止
+              setDetailId(blog.user.id);
+              router.push(`/users/detail?id=${blog.user.id}`);
+            }}
+          >
             <div className="relative w-8 h-8 rounded-full overflow-hidden">
               <Image
                 src={blog.user.userIconUrl || "/default-aveter.svg"}

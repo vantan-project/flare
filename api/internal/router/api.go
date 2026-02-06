@@ -7,6 +7,7 @@ import (
 	bwish "github.com/vantan-project/flare/internal/controller/blogs/wish"
 	"github.com/vantan-project/flare/internal/controller/images"
 	"github.com/vantan-project/flare/internal/controller/tags"
+	"github.com/vantan-project/flare/internal/controller/user"
 	"github.com/vantan-project/flare/internal/custom"
 	"github.com/vantan-project/flare/internal/middleware"
 )
@@ -30,11 +31,11 @@ func Api(e *custom.Group) {
 	b.POST("/:blogId/bookmark", blogs.Bookmark, middleware.Auth)
 	b.DELETE("/:blogId/bookmark", blogs.Disbookmark, middleware.Auth)
 
-	b.GET("/wish", bwish.Index, middleware.Auth)
+	b.GET("/wish", bwish.Index)
 	b.POST("/:blogId/wish", blogs.Wish, middleware.Auth)
 	b.DELETE("/:blogId/wish", blogs.Diswish, middleware.Auth)
 
-	b.GET("/bookmark", bbookmark.Index, middleware.Auth)
+	b.GET("/bookmark", bbookmark.Index)
 	b.POST("/:blogId/bookmark", blogs.Bookmark, middleware.Auth)
 	b.DELETE("/:blogId/bookmark", blogs.Disbookmark, middleware.Auth)
 
@@ -44,4 +45,7 @@ func Api(e *custom.Group) {
 
 	i := e.Group("/images")
 	i.POST("", images.Upload)
+
+	u := e.Group("/users")
+	u.GET("/:id", user.Detail)
 }

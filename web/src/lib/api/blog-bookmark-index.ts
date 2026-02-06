@@ -5,6 +5,7 @@ import { BlogIndexResponse } from "./blog-index";
 export type BlogBookmarkIndexRequest = {
   limit: number | null;
   offset: number | null;
+  userId: number | null;
 };
 
 export type BlogBookmarkIndexResponse = BlogIndexResponse;
