@@ -10,6 +10,7 @@ type Blog struct {
 	Content          string
 	FlarePoint       int
 	CorePoint        int
+	Status           string
 	WishedUsers      []User `gorm:"many2many:wishes"`
 	BookmarkedUsers  []User `gorm:"many2many:bookmarks"`
 	Tags             []Tag  `gorm:"many2many:blog_tags"`
