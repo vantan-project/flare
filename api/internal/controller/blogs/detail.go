@@ -13,22 +13,22 @@ type detailRequest struct {
 }
 
 type detailResponse struct {
-	Data rblog `json:"data"`
+	Data detailBlog `json:"data"`
 }
 
-type rblog struct {
-	Id                uint   `json:"id"`
-	Title             string `json:"title"`
-	Content           string `json:"content"`
-	ThumbnailImageUrl string `json:"thumbnailImageUrl"`
-	User              ruser  `json:"user"`
-	Tags              []rtag `json:"tags"`
-	UpdatedAt         string `json:"updatedAt"`
-	WishesCount       uint   `json:"wishesCount"`
-	BookmarksCount    uint   `json:"bookmarksCount"`
+type detailBlog struct {
+	Id                uint       `json:"id"`
+	Title             string     `json:"title"`
+	Content           string     `json:"content"`
+	ThumbnailImageUrl string     `json:"thumbnailImageUrl"`
+	User              detailUser `json:"user"`
+	Tags              []rtag     `json:"tags"`
+	UpdatedAt         string     `json:"updatedAt"`
+	WishesCount       uint       `json:"wishesCount"`
+	BookmarksCount    uint       `json:"bookmarksCount"`
 }
 
-type ruser struct {
+type detailUser struct {
 	Id          uint   `json:"id"`
 	Name        string `json:"name"`
 	UserIconUrl string `json:"userIconUrl,omitempty"`
@@ -60,7 +60,7 @@ func Detail(cc *custom.Context) error {
 		}
 	}
 
-	var tags []rtag
+	tags := make([]rtag, 0)
 	for _, tag := range blog.Tags {
 		tags = append(tags, rtag{
 			ID:   tag.ID,
@@ -74,12 +74,12 @@ func Detail(cc *custom.Context) error {
 	}
 
 	return cc.JSON(200, detailResponse{
-		Data: rblog{
+		Data: detailBlog{
 			Id:                blog.ID,
 			Title:             blog.Title,
 			Content:           blog.Content,
 			ThumbnailImageUrl: blog.Image.URL,
-			User: ruser{
+			User: detailUser{
 				Id:          blog.User.ID,
 				Name:        blog.User.Profile.Name,
 				UserIconUrl: userIconUrl,

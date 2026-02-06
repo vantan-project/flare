@@ -16,7 +16,7 @@ export function MainLayout({ children }: Props) {
   useEffect(() => {
     authMe().then((res) => setMe(res.data));
   }, []);
-
+  
   return (
     <>
       <Toast placement="top-center" zIndex={10000} />

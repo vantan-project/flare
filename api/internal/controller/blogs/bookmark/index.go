@@ -8,8 +8,9 @@ import (
 )
 
 type bookmarkIndexRequest struct {
-	Limit  *int `query:"limit" validate:"omitempty,min=1,max=20"`
-	Offset *int `query:"offset" validate:"omitempty,min=0"`
+	UserID *uint `query:"userId" validate:"required,min=1"`
+	Limit  *int  `query:"limit" validate:"omitempty,min=1,max=20"`
+	Offset *int  `query:"offset" validate:"omitempty,min=0"`
 }
 
 type bookmarkIndexResponse struct {
@@ -40,7 +41,7 @@ func Index(cc *custom.Context) error {
 
 	query := cc.DB.Model(&model.Blog{}).
 		Joins("INNER JOIN bookmarks ON bookmarks.blog_id = blogs.id").
-		Where("bookmarks.user_id = ?", cc.AuthID).
+		Where("bookmarks.user_id = ?", req.UserID).
 		Where("bookmarks.deleted_at IS NULL").
 		Where("blogs.deleted_at IS NULL")
 

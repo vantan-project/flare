@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 interface MeStore {
-  me: AuthMeResponse | null;
+  me: AuthMeResponse | null | undefined;
   setMe: (me: AuthMeResponse | null) => void;
 
   addWish: (id: number) => void;
@@ -14,7 +14,7 @@ interface MeStore {
 }
 
 export const useMeStore = create<MeStore>((set, get) => ({
-  me: null,
+  me: undefined,
 
   setMe: (me) => set({ me }),
 

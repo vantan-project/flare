@@ -5,6 +5,7 @@ import { BlogIndexResponse } from "./blog-index";
 export type BlogWishIndexRequest = {
   limit: number | null;
   offset: number | null;
+  userId: number | null;
 };
 
 export type BlogWishIndexResponse = BlogIndexResponse;

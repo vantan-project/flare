@@ -8,8 +8,9 @@ import (
 )
 
 type wishIndexRequest struct {
-	Limit  *int `query:"limit" validate:"omitempty,min=1,max=20"`
-	Offset *int `query:"offset" validate:"omitempty,min=0"`
+	UserID *uint `query:"userId" validate:"required,min=1"`
+	Limit  *int  `query:"limit" validate:"omitempty,min=1,max=20"`
+	Offset *int  `query:"offset" validate:"omitempty,min=0"`
 }
 
 type wishIndexResponse struct {
@@ -39,7 +40,7 @@ func Index(cc *custom.Context) error {
 
 	query := cc.DB.Model(&model.Blog{}).
 		Joins("INNER JOIN wishes ON wishes.blog_id = blogs.id").
-		Where("wishes.user_id = ?", cc.AuthID).
+		Where("wishes.user_id = ?", req.UserID).
 		Where("wishes.deleted_at IS NULL").
 		Where("blogs.deleted_at IS NULL")
 

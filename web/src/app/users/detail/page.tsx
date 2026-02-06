@@ -18,6 +18,8 @@ import {
   BlogWishIndexResponse,
   blogWishIndex,
 } from "@/lib/api/blogs-wish-index";
+import { userShow, UserShowResponse } from "@/lib/api/user-show";
+import { useDetailStore } from "@/stores/use-detail-store";
 import { useMeStore } from "@/stores/use-me-store";
 import { useToastStore } from "@/stores/use-toast-store";
 import { accessToken } from "@/utils/access-token";
@@ -29,16 +31,20 @@ import { useEffect, useState } from "react";
 export default function () {
   const router = useRouter();
   const pathname = usePathname();
-  const { me, setMe } = useMeStore();
   const { addToast } = useToastStore();
+  const { setMe } = useMeStore();
+  const { detailId, setDetailId } = useDetailStore();
   const [mode, setMode] = useState<"index" | "wish" | "bookmark" | null>(null);
 
+  const [user, setUser] = useState<UserShowResponse | null>(null);
   const [indexBlogs, setIndexBlogs] = useState<BlogIndexResponse>([]);
   const [wishedBlogs, setWishedBlogs] = useState<BlogBookmarkIndexResponse>([]);
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<BlogWishIndexResponse>(
     [],
   );
-  const [isLoading, setIsLoading] = useState<Record<"index" | "wish" | "bookmark", boolean>>({
+  const [isLoading, setIsLoading] = useState<
+    Record<"index" | "wish" | "bookmark", boolean>
+  >({
     index: true,
     wish: true,
     bookmark: true,
@@ -54,15 +60,22 @@ export default function () {
   const [bookmarkSearch, setBookmarkSearch] =
     useState<BlogBookmarkIndexRequest>();
 
+  const handleLogout = () => {
+    setMe(null);
+    accessToken.remove();
+    addToast("success", "ログアウトしました");
+    router.push("/");
+  };
+
   useEffect(() => {
-    if (!me) return;
+    if (!detailId) return;
     const orderBy: BlogIndexRequest["orderBy"] = "createdAt";
     const req = {
       orderBy,
       limit: 20,
       offset: 0,
       daysAgo: null,
-      userId: me.id,
+      userId: detailId,
       tagIds: [],
     };
 
@@ -70,12 +83,19 @@ export default function () {
     setWishSearch({
       limit: req.limit,
       offset: req.offset,
+      userId: req.userId,
     });
     setBookmarkSearch({
       limit: req.limit,
       offset: req.offset,
+      userId: req.userId,
     });
-  }, [me]);
+  }, [detailId]);
+
+  useEffect(() => {
+    if (!detailId) return;
+    userShow(detailId).then((res) => setUser(res.data));
+  }, [detailId]);
 
   useEffect(() => {
     if (!indexSearch) return;
@@ -123,49 +143,42 @@ export default function () {
   };
 
   useEffect(() => {
-    const updateModeFromURL = () => {
+    const updateFromURL = () => {
       const params = new URLSearchParams(window.location.search);
-      const value = params.get("mode");
-      if (value === "wish" || value === "bookmark") {
-        setMode(value);
+      const id = params.get("id");
+      if (id && !isNaN(Number(id))) {
+        setDetailId(Number(id));
+      }
+
+      const mode = params.get("mode");
+      if (mode === "wish" || mode === "bookmark") {
+        setMode(mode);
         return;
       }
 
       setMode("index");
     };
-    updateModeFromURL();
-    window.addEventListener("popstate", updateModeFromURL);
+    updateFromURL();
+    window.addEventListener("popstate", updateFromURL);
     return () => {
-      window.removeEventListener("popstate", updateModeFromURL);
+      window.removeEventListener("popstate", updateFromURL);
     };
   }, [pathname]);
 
-  if (!mode || !me) return null;
+  if (!user || !mode) return null;
 
   return (
     <div className="px-5 relative">
-      <div
-        className="absolute -top-16 right-4 border-b text-main-hover border-main-hover flex gap-2 px-3 py-1 cursor-pointer"
-        onClick={() => {
-          setMe(null);
-          accessToken.remove();
-          addToast("success", "ログアウトしました");
-          router.push("/");
-        }}
-      >
-        <Icon name="logout" size={24} />
-        ログアウト
-      </div>
       <div className="w-full h-45.25 flex flex-col justify-between items-center">
         <div className="relative w-35 h-35 rounded-full overflow-hidden">
           <Image
-            alt={me.name}
-            src={me.iconImageUrl || "/default-aveter.svg"}
+            alt={user.name}
+            src={user.iconImageUrl || "/default-aveter.svg"}
             fill
             className="object-cover"
           />
         </div>
-        <div className="text-6 font-medium">{me.name}</div>
+        <div className="text-6 font-medium">{user.name}</div>
       </div>
       <div className="h-7.75 p-1.5 mt-15 mb-8.5 text-gray border-t border-gray -mx-5">
         <div className="py-1.5 mb-1 flex gap-5 text-4 font-medium px-5">
@@ -192,19 +205,19 @@ export default function () {
       <div className="flex flex-col gap-3">
         {isLoading[mode]
           ? Array.from({ length: 6 }).map((_, i) => (
-            <BlogSideCardSkeleton key={`profile-skeleton-${i}`} />
-          ))
+              <BlogSideCardSkeleton key={`profile-skeleton-${i}`} />
+            ))
           : blogs[mode].map((blog) => (
-            <BlogSideCard
-              id={blog.id}
-              key={blog.id}
-              title={blog.title}
-              user={blog.user}
-              thumbnailImageUrl={blog.thumbnailImageUrl}
-              wishedCount={blog.wishesCount}
-              bookmarkedCount={blog.bookmarksCount}
-            />
-          ))}
+              <BlogSideCard
+                id={blog.id}
+                key={blog.id}
+                title={blog.title}
+                user={blog.user}
+                thumbnailImageUrl={blog.thumbnailImageUrl}
+                wishedCount={blog.wishesCount}
+                bookmarkedCount={blog.bookmarksCount}
+              />
+            ))}
       </div>
     </div>
   );

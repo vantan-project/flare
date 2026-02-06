@@ -2,11 +2,13 @@ import Image from "next/image";
 import { BookmarkButton } from "../buttons/bookmark-button";
 import { WishButton } from "../buttons/wish-button";
 import { useRouter } from "next/navigation";
+import { useDetailStore } from "@/stores/use-detail-store";
 
 export type BlogCordProps = {
   id: number;
   title: string;
   user: {
+    id: number;
     name: string;
     iconImageUrl: string | null;
   };
@@ -24,25 +26,34 @@ export function BlogCard({
   thumbnailImageUrl,
 }: BlogCordProps) {
   const router = useRouter();
+  const { setDetailId } = useDetailStore();
 
   return (
-    <div className="w-60">
-      <div onClick={() => router.push(`/blogs/detail?blogId=${id}`)}>
-        <div className="relative w-60 h-35 overflow-hidden rounded-[10px]">
-          <Image
-            src={thumbnailImageUrl}
-            alt="画像なし"
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div className="font-medium line-clamp-2 break-all h-[2lh] my-2">
-          {title}
-        </div>
+    <div
+      className="w-60"
+      onClick={() => router.push(`/blogs/detail?blogId=${id}`)}
+    >
+      <div className="relative w-60 h-35 overflow-hidden rounded-[10px]">
+        <Image
+          src={thumbnailImageUrl}
+          alt="画像なし"
+          fill
+          className="object-cover"
+        />
+      </div>
+      <div className="font-medium line-clamp-2 break-all h-[2lh] my-2">
+        {title}
       </div>
 
       <div className="flex justify-between">
-        <div className="flex items-center gap-1 min-w-0 flex-1">
+        <div
+          className="flex items-center gap-1 min-w-0 flex-1"
+          onClick={(e) => {
+            e.stopPropagation(); // 親要素へのクリックイベント伝播を防止
+            setDetailId(user.id);
+            router.push(`/users/detail?id=${user.id}`);
+          }}
+        >
           <div className="relative w-5 h-5 overflow-hidden rounded-full shrink-0">
             <Image
               src={user.iconImageUrl || "/default-aveter.svg"}
