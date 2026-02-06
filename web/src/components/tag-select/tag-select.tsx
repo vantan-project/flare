@@ -22,7 +22,7 @@ export function TagSelect({ value, onChange, onSearch }: Props) {
         popoverRef.current &&
         !popoverRef.current.contains(event.target as Node)
       ) {
-        onSearch();
+        value.length !== 0 && onSearch();
         setIsOpen(false);
       }
     };

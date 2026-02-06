@@ -17,9 +17,9 @@ var (
 )
 
 // JWTトークン検証
-func Verify(tokenString string) (authID uint, err error) {
+func Verify(tokenString string) (*Claims, error) {
 	if tokenString == "" {
-		return 0, ErrMissingToken
+		return nil, ErrMissingToken
 	}
 
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
@@ -32,16 +32,16 @@ func Verify(tokenString string) (authID uint, err error) {
 	if err != nil {
 		// 有効期限切れの場合
 		if errors.Is(err, jwt.ErrTokenExpired) {
-			return 0, ErrExpiredToken
+			return nil, ErrExpiredToken
 		}
-		return 0, fmt.Errorf("%w: %v", ErrTokenVerification, err)
+		return nil, fmt.Errorf("%w: %v", ErrTokenVerification, err)
 	}
 
 	// JWTペイロードを検証
 	claims, ok := token.Claims.(*Claims)
 	if !ok || !token.Valid {
-		return 0, ErrInvalidToken
+		return nil, ErrInvalidToken
 	}
 
-	return claims.AuthID, nil
+	return claims, nil
 }

@@ -60,7 +60,7 @@ func Detail(cc *custom.Context) error {
 		}
 	}
 
-	var tags []rtag
+	tags := make([]rtag, 0)
 	for _, tag := range blog.Tags {
 		tags = append(tags, rtag{
 			ID:   tag.ID,

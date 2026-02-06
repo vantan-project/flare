@@ -17,6 +17,7 @@ func Generate(userID uint, email string) (string, error) {
 	now := time.Now()
 	claims := &Claims{
 		AuthID: userID,
+		Email:  email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(now.Add(TokenExpiry)),
 			IssuedAt:  jwt.NewNumericDate(now),
