@@ -201,6 +201,7 @@ export default function () {
         </div>
         <div className="text-6 font-medium">{me.name}</div>
       </div>
+
       <div className="h-7.75 p-1.5 mt-15 mb-8.5 text-gray border-t border-gray -mx-5">
         <div className="py-1.5 mb-1 flex gap-5 text-4 font-medium px-5">
           <button
