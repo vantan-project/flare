@@ -23,6 +23,7 @@ type indexResponseData struct {
 	User              User   `json:"user"`
 	WishesCount       uint   `json:"wishesCount"`
 	BookmarksCount    uint   `json:"bookmarksCount"`
+	Status            string `json:"status"`
 	UpdatedAt         string `json:"updatedAt"`
 }
 
@@ -42,10 +43,14 @@ func Index(cc *custom.Context) error {
 	cc.BindValidate(&req, nil)
 
 	query := cc.DB.Model(&model.Blog{})
-	// ユーザーIDが存在していた場合。
 	if req.UserId != nil {
-		query = query.Where("blogs.user_id = ?", req.UserId)
+		query = query.Where("blogs.user_id = ?", *req.UserId)
 	}
+
+	if req.UserId == nil || *req.UserId != cc.AuthID {
+		query = query.Where("blogs.status = ?", model.StatusPublic)
+	}
+
 	if req.DaysAgo != nil {
 		query = query.Where("blogs.updated_at > ?", time.Now().AddDate(0, 0, -int(*req.DaysAgo)))
 	}
@@ -61,7 +66,7 @@ func Index(cc *custom.Context) error {
 	}
 
 	// リレーション
-	query = query.Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at," +
+	query = query.Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at,blogs.status," +
 		"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
 		"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount").
 		Preload("User.Profile.Image").
@@ -112,6 +117,7 @@ func Index(cc *custom.Context) error {
 			},
 			WishesCount:    uint(blog.WishedCount),
 			BookmarksCount: uint(blog.BookmarkedCount),
+			Status:         string(blog.Status),
 			UpdatedAt:      blog.UpdatedAt.Format(time.DateTime),
 		}
 	}

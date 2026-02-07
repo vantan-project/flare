@@ -24,6 +24,7 @@ type indexResponseData struct {
 	User              User     `json:"user"`
 	WishesCount       uint     `json:"wishesCount"`
 	BookmarksCount    uint     `json:"bookmarksCount"`
+	Status            string   `json:"status"`
 	Tags              []string `json:"tags"`
 	UpdatedAt         string   `json:"updatedAt"`
 }
@@ -57,7 +58,7 @@ func Index(cc *custom.Context) error {
 		return cc.JSON(500, nil)
 	}
 
-	query = query.Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at," +
+	query = query.Select("blogs.id,blogs.title,blogs.user_id,blogs.thumbnail_image_id,blogs.updated_at,blogs.status," +
 		"(SELECT COUNT(*) FROM wishes WHERE wishes.blog_id = blogs.id AND wishes.deleted_at IS NULL) AS WishedCount," +
 		"(SELECT COUNT(*) FROM bookmarks WHERE bookmarks.blog_id = blogs.id AND bookmarks.deleted_at IS NULL) AS BookmarkedCount").
 		Preload("User.Profile.Image").
@@ -90,6 +91,7 @@ func Index(cc *custom.Context) error {
 			},
 			WishesCount:    uint(blog.WishedCount),
 			BookmarksCount: uint(blog.BookmarkedCount),
+			Status:         string(blog.Status),
 			Tags:           tags,
 			UpdatedAt:      blog.UpdatedAt.Format(time.DateTime),
 		}
