@@ -7,7 +7,7 @@ type BlogStatus string
 const (
 	StatusPublic   BlogStatus = "public"
 	StatusPrivate  BlogStatus = "private"
-	StatusNonHabit BlogStatus = "nonHabit"
+	StatusNonHabit BlogStatus = "non_habit"
 )
 
 type Blog struct {
