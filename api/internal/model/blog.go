@@ -2,6 +2,14 @@ package model
 
 import "gorm.io/gorm"
 
+type BlogStatus string
+
+const (
+	StatusPublic   BlogStatus = "public"
+	StatusPrivate  BlogStatus = "private"
+	StatusNonHabit BlogStatus = "nonHabit"
+)
+
 type Blog struct {
 	gorm.Model
 	UserID           uint
@@ -10,7 +18,7 @@ type Blog struct {
 	Content          string
 	FlarePoint       int
 	CorePoint        int
-	Status           string
+	Status           BlogStatus
 	WishedUsers      []User `gorm:"many2many:wishes"`
 	BookmarkedUsers  []User `gorm:"many2many:bookmarks"`
 	Tags             []Tag  `gorm:"many2many:blog_tags"`

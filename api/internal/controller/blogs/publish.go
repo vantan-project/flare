@@ -51,14 +51,14 @@ func Publish(cc *custom.Context) error {
 		}
 		var status string
 		if ana.IsHabit {
-			status = "公開"
+			status = string(model.StatusPublic)
 		} else {
-			status = "習慣外"
+			status = string(model.StatusNonHabit)
 		}
 		addData := model.Blog{
 			FlarePoint: ana.FlarePoint,
 			CorePoint:  ana.CorePoint,
-			Status:     status,
+			Status:     model.BlogStatus(status),
 		}
 		if err := cc.DB.Where("id = ?", req.BlogID).Updates(&addData).Error; err != nil {
 			fmt.Print("フレアポイントとコアポイントの更新に失敗しました。")

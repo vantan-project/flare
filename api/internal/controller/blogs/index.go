@@ -48,7 +48,7 @@ func Index(cc *custom.Context) error {
 	}
 
 	if req.UserId == nil || *req.UserId != cc.AuthID {
-		query = query.Where("blogs.status = ?", "公開")
+		query = query.Where("blogs.status = ?", model.StatusPublic)
 	}
 
 	if req.DaysAgo != nil {
@@ -117,7 +117,7 @@ func Index(cc *custom.Context) error {
 			},
 			WishesCount:    uint(blog.WishedCount),
 			BookmarksCount: uint(blog.BookmarkedCount),
-			Status:         blog.Status,
+			Status:         string(blog.Status),
 			UpdatedAt:      blog.UpdatedAt.Format(time.DateTime),
 		}
 	}
