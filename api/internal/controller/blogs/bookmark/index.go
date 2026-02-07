@@ -25,6 +25,7 @@ type indexResponseData struct {
 	User              User     `json:"user"`
 	WishesCount       uint     `json:"wishesCount"`
 	BookmarksCount    uint     `json:"bookmarksCount"`
+	Status            string   `json:"status"`
 	Tags              []string `json:"tags"`
 	UpdatedAt         string   `json:"updatedAt"`
 }
@@ -91,6 +92,7 @@ func Index(cc *custom.Context) error {
 			},
 			WishesCount:    uint(blog.WishedCount),
 			BookmarksCount: uint(blog.BookmarkedCount),
+			Status:         blog.Status,
 			Tags:           tags,
 			UpdatedAt:      blog.UpdatedAt.Format(time.DateTime),
 		}

@@ -23,6 +23,7 @@ type indexResponseData struct {
 	User              User   `json:"user"`
 	WishesCount       uint   `json:"wishesCount"`
 	BookmarksCount    uint   `json:"bookmarksCount"`
+	Status            string `json:"status"`
 	UpdatedAt         string `json:"updatedAt"`
 }
 
@@ -42,10 +43,14 @@ func Index(cc *custom.Context) error {
 	cc.BindValidate(&req, nil)
 
 	query := cc.DB.Model(&model.Blog{})
-	// ユーザーIDが存在していた場合。
 	if req.UserId != nil {
-		query = query.Where("blogs.user_id = ?", req.UserId)
+		query = query.Where("blogs.user_id = ?", *req.UserId)
 	}
+
+	if req.UserId == nil || *req.UserId != cc.AuthID {
+		query = query.Where("blogs.status = ?", "公開")
+	}
+
 	if req.DaysAgo != nil {
 		query = query.Where("blogs.updated_at > ?", time.Now().AddDate(0, 0, -int(*req.DaysAgo)))
 	}
