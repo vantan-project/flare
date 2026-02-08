@@ -81,6 +81,8 @@ export default function ImageEditor() {
   };
 
   const [isFocused, setIsFocused] = useState(false);
+  const toolbarRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const checkFocus = () => {
       const el = document.activeElement;
@@ -99,6 +101,24 @@ export default function ImageEditor() {
       document.removeEventListener("focusin", checkFocus);
       document.removeEventListener("focusout", checkFocus);
     };
+  }, []);
+
+  // rAFループでキーボード表示時もツールバーを上部に固定
+  useEffect(() => {
+    let rafId: number;
+
+    const tick = () => {
+      const el = toolbarRef.current;
+      if (el) {
+        const vv = window.visualViewport;
+        const offset = vv ? vv.offsetTop : 0;
+        el.style.transform = `translateY(${offset}px)`;
+      }
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   useEffect(() => {
@@ -212,7 +232,9 @@ export default function ImageEditor() {
       <AnimatePresence>
         {isFocused && (
           <motion.div
-            className="fixed top-24 right-2 flex flex-col gap-2"
+            ref={toolbarRef}
+            className="fixed right-2 flex flex-col gap-2"
+            style={{ top: 96 }}
             initial={{ x: 80, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 80, opacity: 0 }}

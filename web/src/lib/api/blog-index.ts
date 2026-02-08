@@ -17,7 +17,7 @@ export type BlogIndexResponse = {
   user: {
     id: number;
     name: string;
-    iconImageUrl: string;
+    userIconUrl: string;
   };
   wishesCount: number;
   bookmarksCount: number;

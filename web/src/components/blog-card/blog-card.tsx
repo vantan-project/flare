@@ -10,7 +10,7 @@ export type BlogCordProps = {
   user: {
     id: number;
     name: string;
-    iconImageUrl: string | null;
+    userIconUrl: string | null;
   };
   bookmarkedCount: number;
   wishedCount: number;
@@ -56,7 +56,7 @@ export function BlogCard({
         >
           <div className="relative w-5 h-5 overflow-hidden rounded-full shrink-0">
             <Image
-              src={user.iconImageUrl || "/default-aveter.svg"}
+              src={user.userIconUrl || "/default-aveter.svg"}
               alt={user.name}
               fill
             />
