@@ -31,7 +31,7 @@ export function MainLayout({ children }: Props) {
         />
       </div>
       <div className="pt-42">{children}</div>
-      <div className="h-20" />
+      <div className="h-36" />
       <div className="fixed bottom-0 inset-x-0 z-80">
         <Footer />
       </div>
