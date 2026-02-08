@@ -26,6 +26,7 @@ export default function BlogPage() {
   const [orderBy, setOrderBy] =
     useState<BlogIndexRequest["orderBy"]>("createdAt");
   const [tagIds, setTagIds] = useState<number[]>([]);
+  const [searchTagIds, setSearchTagIds] = useState<number[]>([]);
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +47,10 @@ export default function BlogPage() {
     }
 
     const parsedTagIds = JSON.parse(params.get("tagIds") || "[]");
-    if (parsedTagIds.length > 0) setTagIds(parsedTagIds);
+    if (parsedTagIds.length > 0) {
+      setTagIds(parsedTagIds);
+      setSearchTagIds(parsedTagIds);
+    }
 
     initialized.current = true;
   }, []);
@@ -58,7 +62,8 @@ export default function BlogPage() {
     const params = new URLSearchParams();
     if (orderBy !== "createdAt") params.set("orderBy", orderBy);
     if (page > 1) params.set("page", String(page));
-    if (tagIds.length > 0) params.set("tagIds", JSON.stringify(tagIds));
+    if (searchTagIds.length > 0)
+      params.set("tagIds", JSON.stringify(searchTagIds));
 
     const query = params.toString();
     window.history.replaceState(
@@ -73,9 +78,9 @@ export default function BlogPage() {
       offset: (page - 1) * LIMIT,
       userId: null,
       daysAgo: null,
-      tagIds,
+      tagIds: searchTagIds,
     });
-  }, [page, orderBy, tagIds]);
+  }, [page, orderBy, searchTagIds]);
 
   // データ取得
   useEffect(() => {
@@ -142,7 +147,10 @@ export default function BlogPage() {
         <TagSelect
           value={tagIds}
           onChange={(v) => setTagIds(v)}
-          onSearch={() => setPage(1)}
+          onSearch={() => {
+            setSearchTagIds(tagIds);
+            setPage(1);
+          }}
         />
       </div>
       <div className="px-5">
