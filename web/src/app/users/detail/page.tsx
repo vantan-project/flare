@@ -370,7 +370,7 @@ export default function () {
           </div>
           <div className="text-6 font-medium">{user.name}</div>
         </div>
-        <div className="absolute top-0 right-0" onClick={() => setIsDrawerOpen(true)}>
+        <div className="fixed top-28 right-4" onClick={() => setIsDrawerOpen(true)}>
           <Icon name="setting" size={32} />
         </div>
       </div>
