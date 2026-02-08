@@ -16,6 +16,7 @@ import { Sort } from "./svgs/sort";
 import { Success } from "./svgs/success";
 import { Toggle } from "./svgs/toggle";
 import { Login } from "./svgs/login";
+import { Setting } from "./svgs/setting";
 
 const icons = {
   flare: Flare,
@@ -36,6 +37,7 @@ const icons = {
   h3: h3,
   logout: Logout,
   login: Login,
+  setting: Setting,
 } as const;
 
 export type IconProps = {
