@@ -8,50 +8,84 @@ import {
   BlogIndexRequest,
   BlogIndexResponse,
 } from "@/lib/api/blog-index";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Pagination } from "@/components/pagination/pagination";
+import { useEffect, useRef, useState } from "react";
+
+const LIMIT = 20;
+const VALID_ORDER_BY = [
+  "createdAt",
+  "flarePoint",
+  "corePoint",
+  "wish",
+  "bookmark",
+] as const;
 
 export default function BlogPage() {
   const [search, setSearch] = useState<BlogIndexRequest>();
   const [blogs, setBlogs] = useState<BlogIndexResponse>([]);
+  const [orderBy, setOrderBy] =
+    useState<BlogIndexRequest["orderBy"]>("createdAt");
   const [tagIds, setTagIds] = useState<number[]>([]);
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const initialized = useRef(false);
 
+  // 初期ロード: クエリパラメーター → state
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
 
     const rawOrderBy = params.get("orderBy");
-    const validOrderBy = [
-      "createdAt",
-      "flarePoint",
-      "corePoint",
-      "wish",
-      "bookmark",
-    ] as const;
-    const orderBy = validOrderBy.includes(rawOrderBy as any)
-      ? (rawOrderBy as (typeof validOrderBy)[number])
-      : "createdAt";
+    if (VALID_ORDER_BY.includes(rawOrderBy as any)) {
+      setOrderBy(rawOrderBy as (typeof VALID_ORDER_BY)[number]);
+    }
 
-    const getNumParam = (key: string, def: number | null = null) => {
-      const val = params.get(key);
-      const num = val !== null ? Number(val) : NaN;
-      return !isNaN(num) ? num : def;
-    };
+    const pageParam = Number(params.get("page"));
+    if (!isNaN(pageParam) && pageParam >= 1) {
+      setPage(pageParam);
+    }
 
-    const limit = getNumParam("limit", 20) ?? 20;
-    const offset = getNumParam("offset", 0) ?? 0;
-    const userId = getNumParam("userId");
-    const daysAgo = getNumParam("daysAgo");
-    const tagIds = JSON.parse(params.get("tagIds") || "[]");
-    setTagIds(tagIds);
-    setSearch({ orderBy, limit, offset, userId, daysAgo, tagIds });
+    const parsedTagIds = JSON.parse(params.get("tagIds") || "[]");
+    if (parsedTagIds.length > 0) setTagIds(parsedTagIds);
+
+    initialized.current = true;
   }, []);
 
+  // state変更 → クエリパラメーター更新 + search構築
+  useEffect(() => {
+    if (!initialized.current) return;
+
+    const params = new URLSearchParams();
+    if (orderBy !== "createdAt") params.set("orderBy", orderBy);
+    if (page > 1) params.set("page", String(page));
+    if (tagIds.length > 0) params.set("tagIds", JSON.stringify(tagIds));
+
+    const query = params.toString();
+    window.history.replaceState(
+      null,
+      "",
+      query ? `?${query}` : window.location.pathname,
+    );
+
+    setSearch({
+      orderBy,
+      limit: LIMIT,
+      offset: (page - 1) * LIMIT,
+      userId: null,
+      daysAgo: null,
+      tagIds,
+    });
+  }, [page, orderBy, tagIds]);
+
+  // データ取得
   useEffect(() => {
     if (!search) return;
     setIsLoading(true);
     blogIndex(search)
-      .then((res) => setBlogs(res.data))
+      .then((res) => {
+        setBlogs(res.data);
+        setLastPage(Math.max(1, Math.ceil(res.total / LIMIT)));
+      })
       .finally(() => setIsLoading(false));
   }, [search]);
 
@@ -61,41 +95,54 @@ export default function BlogPage() {
     <div>
       <div className="fixed top-24 right-4 flex items-end justify-end gap-2 z-40">
         <SortSelect
-          value={search?.orderBy || null}
+          value={orderBy}
           options={[
             {
               value: "createdAt",
               label: "最新順",
               onClick: () => {
-                setSearch({ ...search, orderBy: "createdAt" });
+                setOrderBy("createdAt");
+                setPage(1);
               },
             },
             {
               value: "flarePoint",
               label: "熱意度順",
-              onClick: () => setSearch({ ...search, orderBy: "flarePoint" }),
+              onClick: () => {
+                setOrderBy("flarePoint");
+                setPage(1);
+              },
             },
             {
               value: "corePoint",
               label: "コア度順",
-              onClick: () => setSearch({ ...search, orderBy: "corePoint" }),
+              onClick: () => {
+                setOrderBy("corePoint");
+                setPage(1);
+              },
             },
             {
               value: "wish",
               label: "やってみたい順",
-              onClick: () => setSearch({ ...search, orderBy: "wish" }),
+              onClick: () => {
+                setOrderBy("wish");
+                setPage(1);
+              },
             },
             {
               value: "bookmark",
               label: "ブックマーク順",
-              onClick: () => setSearch({ ...search, orderBy: "bookmark" }),
+              onClick: () => {
+                setOrderBy("bookmark");
+                setPage(1);
+              },
             },
           ]}
         />
         <TagSelect
           value={tagIds}
           onChange={(v) => setTagIds(v)}
-          onSearch={() => setSearch({ ...search, tagIds: tagIds })}
+          onSearch={() => setPage(1)}
         />
       </div>
       <div className="px-5">
@@ -103,20 +150,28 @@ export default function BlogPage() {
         <div className="grid gap-3">
           {isLoading
             ? Array.from({ length: 10 }).map((_, i) => (
-              <BlogSideCardSkeleton key={`blogs-skeleton-${i}`} />
-            ))
+                <BlogSideCardSkeleton key={`blogs-skeleton-${i}`} />
+              ))
             : blogs.map((b) => (
-              <BlogSideCard
-                id={b.id}
-                key={b.id}
-                title={b.title}
-                user={b.user}
-                wishedCount={b.wishesCount}
-                bookmarkedCount={b.bookmarksCount}
-                thumbnailImageUrl={b.thumbnailImageUrl}
-              />
-            ))}
+                <BlogSideCard
+                  id={b.id}
+                  key={b.id}
+                  title={b.title}
+                  user={b.user}
+                  wishedCount={b.wishesCount}
+                  bookmarkedCount={b.bookmarksCount}
+                  thumbnailImageUrl={b.thumbnailImageUrl}
+                />
+              ))}
         </div>
+      </div>
+
+      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50">
+        <Pagination
+          currentPage={page}
+          lastPage={lastPage}
+          onClick={(num) => setPage(num)}
+        />
       </div>
     </div>
   );

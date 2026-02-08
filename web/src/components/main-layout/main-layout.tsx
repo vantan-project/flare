@@ -14,9 +14,10 @@ type Props = {
 export function MainLayout({ children }: Props) {
   const { setMe } = useMeStore();
   useEffect(() => {
-    authMe().then((res) => setMe(res.data));
+    authMe().then((res) =>
+      setMe(res.data || null));
   }, []);
-  
+
   return (
     <>
       <Toast placement="top-center" zIndex={10000} />
@@ -31,7 +32,7 @@ export function MainLayout({ children }: Props) {
         />
       </div>
       <div className="pt-42">{children}</div>
-      <div className="h-20" />
+      <div className="h-36" />
       <div className="fixed bottom-0 inset-x-0 z-80">
         <Footer />
       </div>

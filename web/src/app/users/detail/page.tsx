@@ -2,6 +2,7 @@
 
 import { BlogSideCard } from "@/components/blog-sidecard/blog-sidecard";
 import { BlogSideCardSkeleton } from "@/components/blog-sidecard/blog-sidecard-skeleton";
+import { SettingDrawer } from "@/components/drawer/setting-drawer";
 import { Icon } from "@/components/icon/icon";
 import {
   BlogBookmarkIndexRequest,
@@ -26,7 +27,12 @@ import { accessToken } from "@/utils/access-token";
 import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { EditButton } from "@/components/buttons/edit-button";
+import { imageStore } from "@/lib/api/image-store";
+import { userUpdate, UserUpdateRequest } from "@/lib/api/user-update";
+import { authDestory } from "@/lib/api/auth-destory";
 
 export default function () {
   const router = useRouter();
@@ -55,6 +61,90 @@ export default function () {
     bookmark: bookmarkedBlogs,
   };
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [iconPreview, setIconPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  type UserSettingForm = {
+    name: string;
+    iconImageId: number | undefined;
+  };
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { dirtyFields, isSubmitting },
+  } = useForm<UserSettingForm>();
+
+  // ドロワーが開いたときにフォームの初期値をセット
+  useEffect(() => {
+    if (isDrawerOpen && user) {
+      reset({ name: user.name, iconImageId: undefined });
+      setIsEditingName(false);
+      setIconPreview(null);
+    }
+  }, [isDrawerOpen, user]);
+
+  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // プレビュー表示
+    setIconPreview(URL.createObjectURL(file));
+
+    // 画像アップロードAPI
+    imageStore({ image: file })
+      .then((res) => {
+        if (res.status === "success") {
+          setValue("iconImageId", res.imageId, { shouldDirty: true });
+          return;
+        }
+        addToast("error", "画像アップロードに失敗しました。");
+        setIconPreview(null);
+      })
+      .catch(() => {
+        addToast("error", "画像アップロードに失敗しました。");
+        setIconPreview(null);
+      })
+      .finally(() => (e.target.value = ""));
+  };
+
+  const onSettingSubmit = (values: UserSettingForm) => {
+    // dirtyFieldsのみをPATCH
+    const patchData: UserUpdateRequest = {};
+    if (dirtyFields.name) patchData.name = values.name;
+    if (dirtyFields.iconImageId) patchData.iconImageId = values.iconImageId;
+
+    if (Object.keys(patchData).length === 0) {
+      addToast("error", "変更がありません。");
+      return;
+    }
+
+    userUpdate(patchData).then((res) => {
+      switch (res.status) {
+        case "success":
+          addToast("success", "アカウント設定を更新しました。");
+          // ユーザー情報を再取得
+          if (detailId) {
+            userShow(detailId).then((res) => setUser(res.data));
+          }
+          setIsDrawerOpen(false);
+          break;
+        case "error":
+          addToast("error", res.message);
+          break;
+        case "validation":
+          // バリデーションエラーをトースト表示
+          const messages = Object.values(res.fieldErrors).join("\n");
+          addToast("error", messages);
+          break;
+      }
+    });
+  };
+
   const [indexSearch, setIndexSearch] = useState<BlogIndexRequest>();
   const [wishSearch, setWishSearch] = useState<BlogWishIndexRequest>();
   const [bookmarkSearch, setBookmarkSearch] =
@@ -66,6 +156,19 @@ export default function () {
     addToast("success", "ログアウトしました");
     router.push("/");
   };
+
+  const handleAccountDelete = () => {
+    authDestory().then((res) => {
+      if (res.status === "success") {
+        setMe(null);
+        accessToken.remove();
+        addToast("success", res.message);
+        router.push("/");
+      } else if (res.status === "error") {
+        addToast("error", res.message);
+      }
+    })
+  }
 
   useEffect(() => {
     if (!detailId) return;
@@ -167,18 +270,109 @@ export default function () {
 
   if (!user || !mode) return null;
 
+  if (isDrawerOpen) {
+    return <SettingDrawer
+      isOpen={isDrawerOpen}
+      placement="bottom"
+      zIndex={100}
+      onClose={() => setIsDrawerOpen(false)}>
+      <form
+        className="mx-5 rounded-t-[15px] bg-white h-[80vh] p-5"
+        onSubmit={handleSubmit(onSettingSubmit)}
+      >
+        <h1 className="w-full mx-auto py-[30px] text-[#000] font-medium text-2xl text-center border-b border-b-[#aaa]">
+          アカウント設定
+        </h1>
+        <div className="my-[30px] w-full flex items-center flex-col justify-center gap-3">
+          <div className="relative w-35 h-35 rounded-full overflow-hidden">
+            <Image
+              alt={user.name}
+              src={iconPreview || user.iconImageUrl || "/default-aveter.svg"}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleIconChange}
+          />
+          <button
+            type="button"
+            className="border border-black rounded-[100px]"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <span className="text-[12px] text-black p-3">編集</span>
+          </button>
+        </div>
+        <div className="w-full flex flex-col items-start gap-2">
+          <label htmlFor="userName" className="text-[#000] text-sm font-medium">
+            ユーザー名
+          </label>
+          <div className="w-[90%] mx-auto flex items-center justify-between">
+            {isEditingName ? (
+              <input
+                id="userName"
+                type="text"
+                autoFocus
+                className="text-[#000] text-sm font-medium border border-gray rounded-md px-2 py-1 w-full mr-2 outline-none focus:border-primary"
+                {...register("name", {
+                  required: "ユーザー名は必須です",
+                  maxLength: { value: 50, message: "50文字以内で入力してください" },
+                })}
+              />
+            ) : (
+              <p className="text-[#000] text-sm font-medium">{user.name}</p>
+            )}
+            <button
+              type="button"
+              className="border border-black rounded-[100px] shrink-0"
+              onClick={() => setIsEditingName(!isEditingName)}
+            >
+              <span className="text-[12px] text-black p-3">
+                {isEditingName ? "完了" : "編集"}
+              </span>
+            </button>
+          </div>
+        </div>
+        <div className="w-full flex flex-col items-start gap-3 mt-6">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full bg-primary text-white rounded-[15px] py-3 text-center font-medium text-sm mt-6 disabled:opacity-50"
+          >
+            {isSubmitting ? "保存中..." : "保存"}
+          </button>
+          <button className="w-full rounded-[100px] border border-black py-3" type="button" onClick={handleLogout}>
+            <span className="text-sm text-black font-medium">ログアウト</span>
+          </button>
+          <button className="w-full py-3" type="button" onClick={handleAccountDelete}>
+            <span className="text-sm text-[#ff0000] font-medium text-center w-full">アカウント削除</span>
+          </button>
+        </div>
+      </form>
+    </SettingDrawer>
+  }
+
   return (
     <div className="px-5 relative">
-      <div className="w-full h-45.25 flex flex-col justify-between items-center">
-        <div className="relative w-35 h-35 rounded-full overflow-hidden">
-          <Image
-            alt={user.name}
-            src={user.iconImageUrl || "/default-aveter.svg"}
-            fill
-            className="object-cover"
-          />
+      <div className="relative">
+        <div className="w-full h-45.25 flex flex-col justify-between items-center">
+          <div className="relative w-35 h-35 rounded-full overflow-hidden">
+            <Image
+              alt={user.name}
+              src={user.iconImageUrl || "/default-aveter.svg"}
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="text-6 font-medium">{user.name}</div>
         </div>
-        <div className="text-6 font-medium">{user.name}</div>
+        <div className="fixed top-28 right-4" onClick={() => setIsDrawerOpen(true)}>
+          <Icon name="setting" size={32} />
+        </div>
       </div>
       <div className="h-7.75 p-1.5 mt-15 mb-8.5 text-gray border-t border-gray -mx-5">
         <div className="py-1.5 mb-1 flex gap-5 text-4 font-medium px-5">
@@ -205,19 +399,19 @@ export default function () {
       <div className="flex flex-col gap-3">
         {isLoading[mode]
           ? Array.from({ length: 6 }).map((_, i) => (
-              <BlogSideCardSkeleton key={`profile-skeleton-${i}`} />
-            ))
+            <BlogSideCardSkeleton key={`profile-skeleton-${i}`} />
+          ))
           : blogs[mode].map((blog) => (
-              <BlogSideCard
-                id={blog.id}
-                key={blog.id}
-                title={blog.title}
-                user={blog.user}
-                thumbnailImageUrl={blog.thumbnailImageUrl}
-                wishedCount={blog.wishesCount}
-                bookmarkedCount={blog.bookmarksCount}
-              />
-            ))}
+            <BlogSideCard
+              id={blog.id}
+              key={blog.id}
+              title={blog.title}
+              user={blog.user}
+              thumbnailImageUrl={blog.thumbnailImageUrl}
+              wishedCount={blog.wishesCount}
+              bookmarkedCount={blog.bookmarksCount}
+            />
+          ))}
       </div>
     </div>
   );

@@ -47,6 +47,7 @@ func Detail(cc *custom.Context) error {
 	query := cc.DB.Model(&model.Blog{}).
 		Where("id = ?", req.BlogID).
 		Where("deleted_at IS NULL").
+		Where("status = ?", model.StatusPublic).
 		Preload("User.Profile.Image").
 		Preload("Tags").
 		Preload("Image").

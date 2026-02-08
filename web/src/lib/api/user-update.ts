@@ -3,9 +3,9 @@ import { MutationResponse } from "../mutation-response";
 
 export type UserUpdateRequest = {
   name?: string;
-  iconImageId?: string;
+  iconImageId?: number;
 };
 
 export function userUpdate(req: UserUpdateRequest): Promise<MutationResponse> {
-  return fetchApi("PATCH", "/users", req);
+  return fetchApi("PATCH", `/auth/me`, req);
 }

@@ -117,19 +117,19 @@ function Page() {
         <div className="flex gap-5 overflow-x-auto pb-1">
           {isLoading
             ? Array.from({ length: 5 }).map((_, i) => (
-              <BlogCardSkeleton key={`flare-skeleton-${i}`} />
-            ))
+                <BlogCardSkeleton key={`flare-skeleton-${i}`} />
+              ))
             : flareBlogs.map((b) => (
-              <BlogCard
-                id={b.id}
-                key={b.id}
-                title={b.title}
-                user={b.user}
-                wishedCount={b.wishesCount}
-                bookmarkedCount={b.bookmarksCount}
-                thumbnailImageUrl={b.thumbnailImageUrl}
-              />
-            ))}
+                <BlogCard
+                  id={b.id}
+                  key={b.id}
+                  title={b.title}
+                  user={b.user}
+                  wishedCount={b.wishesCount}
+                  bookmarkedCount={b.bookmarksCount}
+                  thumbnailImageUrl={b.thumbnailImageUrl}
+                />
+              ))}
         </div>
         <div className="h-3 mb-5 border-b border-base-hover -mx-5" />
         <div className="font-medium border-b-2 p-2 mb-3">
@@ -139,19 +139,19 @@ function Page() {
         <div className="flex gap-5 overflow-x-auto pb-1">
           {isLoading
             ? Array.from({ length: 5 }).map((_, i) => (
-              <BlogCardSkeleton key={`core-skeleton-${i}`} />
-            ))
+                <BlogCardSkeleton key={`core-skeleton-${i}`} />
+              ))
             : coreBlogs.map((b) => (
-              <BlogCard
-                id={b.id}
-                key={b.id}
-                title={b.title}
-                user={b.user}
-                wishedCount={b.wishesCount}
-                bookmarkedCount={b.bookmarksCount}
-                thumbnailImageUrl={b.thumbnailImageUrl}
-              />
-            ))}
+                <BlogCard
+                  id={b.id}
+                  key={b.id}
+                  title={b.title}
+                  user={b.user}
+                  wishedCount={b.wishesCount}
+                  bookmarkedCount={b.bookmarksCount}
+                  thumbnailImageUrl={b.thumbnailImageUrl}
+                />
+              ))}
         </div>
         <div className="h-3 mb-5 border-b border-base-hover -mx-5" />
         <div className="mb-3 text-sm">
@@ -163,21 +163,22 @@ function Page() {
         <div className="flex flex-col gap-3 overflow-y-auto">
           {isLoading
             ? Array.from({ length: 8 }).map((_, i) => (
-              <BlogSideCardSkeleton key={`new-skeleton-${i}`} />
-            ))
+                <BlogSideCardSkeleton key={`new-skeleton-${i}`} />
+              ))
             : newBlogs.map((b) => (
-              <BlogSideCard
-                id={b.id}
-                key={b.id}
-                title={b.title}
-                user={b.user}
-                wishedCount={b.wishesCount}
-                bookmarkedCount={b.bookmarksCount}
-                thumbnailImageUrl={b.thumbnailImageUrl}
-              />
-            ))}
+                <BlogSideCard
+                  id={b.id}
+                  key={b.id}
+                  title={b.title}
+                  user={b.user}
+                  wishedCount={b.wishesCount}
+                  bookmarkedCount={b.bookmarksCount}
+                  thumbnailImageUrl={b.thumbnailImageUrl}
+                />
+              ))}
         </div>
       </div>
+
     </div>
   );
 }

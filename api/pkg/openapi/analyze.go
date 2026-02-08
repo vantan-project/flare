@@ -12,8 +12,9 @@ import (
 
 // PostAnalysis は投稿の分析結果を保持する構造体
 type PostAnalysis struct {
-	CorePoint  int `json:"core_point" jsonschema:"title=Core Point,description=コア度（ユーモアやニッチかどうか）0-100の整数,minimum=0,maximum=100"`
-	FlarePoint int `json:"flare_point" jsonschema:"title=Flare Point,description=熱意度（他人に薦めたい度合い）0-100の整数,minimum=0,maximum=100"`
+	CorePoint  int  `json:"core_point" jsonschema:"title=Core Point,description=コア度（ユーモアやニッチかどうか）0-100の整数,minimum=0,maximum=100"`
+	FlarePoint int  `json:"flare_point" jsonschema:"title=Flare Point,description=熱意度（他人に薦めたい度合い）0-100の整数,minimum=0,maximum=100"`
+	IsHabit    bool `json:"is_habit" jsonschema:"title=Is Habit,description=習慣かどうか true: 習慣 false: 習慣外"`
 }
 
 // PostInput は投稿の入力データ
@@ -57,10 +58,17 @@ func Analyze(ai *custom.AI, ctx context.Context, post PostInput) (*PostAnalysis,
    - 最大熱意(ほとんどあり得ない): 76-100
 	 - 平均が20になるように厳しめに判定して
 
+3. is_habit (習慣かどうか):
+   - タイトルや本文から投稿が習慣的なものかどうかを判断してください。
+   - 習慣である場合は1、習慣外である場合は0を返してください。
+   - ここでいう習慣とは、筋トレや読書、オムライス作りなど日常生活における継続的な日々の行動を指しています。
+   - 習慣である場合はtrue,習慣外である場合はfalseを返してください。
+
 以下のJSON形式で返してください（説明文は不要で、JSONのみを返してください）:
 {
   "core_point": 整数値,
-  "flare_point": 整数値
+  "flare_point": 整数値,
+  "is_habit" : bool値
 }`,
 		post.Title,
 		post.Tags,
