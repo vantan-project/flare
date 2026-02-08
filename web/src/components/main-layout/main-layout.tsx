@@ -14,9 +14,10 @@ type Props = {
 export function MainLayout({ children }: Props) {
   const { setMe } = useMeStore();
   useEffect(() => {
-    authMe().then((res) => setMe(res.data));
+    authMe().then((res) =>
+      setMe(res.data || null));
   }, []);
-  
+
   return (
     <>
       <Toast placement="top-center" zIndex={10000} />

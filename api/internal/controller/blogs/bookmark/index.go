@@ -44,7 +44,8 @@ func Index(cc *custom.Context) error {
 		Joins("INNER JOIN bookmarks ON bookmarks.blog_id = blogs.id").
 		Where("bookmarks.user_id = ?", req.UserID).
 		Where("bookmarks.deleted_at IS NULL").
-		Where("blogs.deleted_at IS NULL")
+		Where("blogs.deleted_at IS NULL").
+		Where("blogs.status = ?", model.StatusPublic)
 
 	if req.Limit != nil {
 		query = query.Limit(*req.Limit)
